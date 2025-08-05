@@ -43,76 +43,68 @@ export default function Projects() {
   }, [])
 
   const projects: Project[] = [
-    {
-      id: 1,
-      title: "E-Commerce Payment Gateway",
-      description:
-        "A full-stack e-commerce solution with user authentication, payment processing, and admin dashboard.",
-      longDescription:
-        "A comprehensive e-commerce platform built with React and Node.js. Features include user authentication, shopping cart functionality, secure payment processing with Stripe, order management, and a complete admin dashboard for inventory management. The application uses MongoDB for data storage and implements real-time notifications.",
-      image: "/placeholder.svg?height=300&width=400",
-      technologies: ["React", "Node.js", "MongoDB", "Stripe", "Express"],
-      liveUrl: "https://example.com",
-      githubUrl: "https://github.com/example",
-      gallery: [
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-      ],
-    },
-    {
-      id: 2,
-      title: "Inventory Management System",
-      description:
-        "A collaborative task management application with real-time updates and team collaboration features.",
-      longDescription:
-        "A modern task management application inspired by tools like Trello and Asana. Built with React and Firebase, it features real-time collaboration, drag-and-drop functionality, team management, file attachments, and detailed project analytics. Users can create boards, assign tasks, set deadlines, and track progress in real-time.",
-      image: "/placeholder.svg?height=300&width=400",
-      technologies: ["React", "Firebase", "Material-UI", "Redux"],
-      liveUrl: "https://example.com",
-      githubUrl: "https://github.com/example",
-      gallery: [
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-      ],
-    },
-    {
-      id: 3,
-      title: "Event Planner",
-      description: "A responsive weather application with location-based forecasts and interactive maps.",
-      longDescription:
-        "A comprehensive weather dashboard that provides current weather conditions, 7-day forecasts, and interactive weather maps. Built with React and integrated with multiple weather APIs, it features location-based weather detection, favorite locations, weather alerts, and beautiful data visualizations with charts and graphs.",
-      image: "/placeholder.svg?height=300&width=400",
-      technologies: ["React", "Chart.js", "OpenWeather API", "Tailwind CSS"],
-      liveUrl: "https://example.com",
-      githubUrl: "https://github.com/example",
-      gallery: [
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-      ],
-    },
-    {
-      id: 4,
-      title: "Tour & Travel",
-      description: "A social media analytics dashboard with data visualization and engagement tracking.",
-      longDescription:
-        "A comprehensive social media analytics dashboard that aggregates data from multiple platforms. Features include engagement metrics, follower growth tracking, content performance analysis, and automated reporting. Built with React and D3.js for advanced data visualizations, it helps users understand their social media performance at a glance.",
-      image: "/placeholder.svg?height=300&width=400",
-      technologies: ["React", "D3.js", "Node.js", "PostgreSQL"],
-      liveUrl: "https://example.com",
-      githubUrl: "https://github.com/example",
-      gallery: [
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-        "/placeholder.svg?height=400&width=600",
-      ],
-    },
+  {
+    "id": 1,
+    "title": "E-Commerce Payment Gateway",
+    "description": "An e-commerce platform with a PHP backend, integrated with the Midtrans payment gateway and RajaOngkir shipping calculator API.",
+    "longDescription": "A functional e-commerce application built with native PHP and a MySQL database. This platform enables users to browse products, manage their shopping cart, and complete transactions securely. Key features include seamless integration with the RajaOngkir API for real-time domestic shipping cost calculations and a secure payment process handled by the Midtrans payment gateway. The system also includes an admin panel for product and order management.",
+    "image": "/chemtrank.png",
+    "technologies": ["PHP", "MySQL", "RajaOngkir API", "Midtrans API"],
+    "liveUrl": "https://example.com",
+    "githubUrl": "https://github.com/example",
+    "gallery": [
+      "/chemongkir.png",
+      "/chemtrank.png"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Inventory Management System",
+    "description": "A web-based inventory management system to track product stock, transactions, and master data, built with a React frontend and Laravel backend.",
+    "longDescription": "A comprehensive Inventory Management System designed to streamline business operations. The front-end is built with React and Material-UI, offering a clean and responsive user interface for managing master data, tracking product stock, and recording incoming/outgoing transactions. The powerful back-end is powered by Laravel, providing a robust REST API for all data operations. This system helps businesses maintain accurate inventory levels and monitor stock movements efficiently.",
+    "image": "/dashboardi.png",
+    "technologies": ["React", "Laravel", "Rest API", "Material-UI", "Firebase"],
+    "liveUrl": "https://example.com",
+    "githubUrl": "https://github.com/example",
+    "gallery": [
+      "/invenmasdat.png",
+      "/invenbarang.png",
+      "/inventransaksi.png",
+      "/invenakun.png"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Event Planner",
+    "description": "A modern and responsive landing page for an Event Planner business, designed to showcase services, packages, and a gallery.",
+    "longDescription": "A visually appealing landing page for an Event Planner service, built from scratch using HTML, Tailwind CSS, and vanilla JavaScript. The site is fully responsive and designed to attract potential clients by showcasing available service packages, a gallery of past events, customer testimonials, and an easy-to-use contact section. The focus is on a modern design and a smooth user experience to effectively market the business.",
+    "image": "/eventplanner.png",
+    "technologies": ["HTML", "JavaScript", "Tailwind CSS"],
+    "liveUrl": "https://example.com",
+    "githubUrl": "https://github.com/example",
+    "gallery": [
+      "/eventpaket.png",
+      "/eventgaleri.png",
+      "/eventtesti.png",
+      "/eventkontak.png"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Tour & Travel",
+    "description": "A promotional website for a Tour & Travel agency, featuring tour packages, special promos, and booking information.",
+    "longDescription": "A promotional website designed for a Tour & Travel agency to showcase its offerings and attract customers. Developed with HTML, Tailwind CSS, and JavaScript, the site features detailed information on travel packages, current promotions, and a clear call-to-action for bookings. The layout is fully responsive, ensuring a great user experience on all devices, from desktops to mobile phones. The design aims to be engaging and persuasive, encouraging users to explore travel options and make inquiries.",
+    "image": "/tour&travel.png",
+    "technologies": ["HTML", "Tailwind CSS", "JavaScript"],
+    "liveUrl": "https://example.com",
+    "githubUrl": "https://github.com/example",
+    "gallery": [
+      "/travelpaket.png",
+      "/travelpromo.png",
+      "/travelpemesanan.png",
+      "/travelkontak.png"
+    ]
+  }
   ]
 
   const openModal = (project: Project) => {
