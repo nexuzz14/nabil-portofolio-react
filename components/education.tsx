@@ -49,27 +49,29 @@ export default function Education() {
       ],
     },
     {
-      id: 2,
-      institution: "freeCodeCamp",
-      degree: "Full Stack Web Development Certification",
-      period: "2023",
-      location: "Online",
-      status: "Completed",
-      coursework: [
-        "Responsive Web Design",
-        "JavaScript Algorithms",
-        "Front End Development Libraries",
-        "Data Visualization",
-        "Back End Development",
-        "Quality Assurance",
+      "id": 2,
+      "institution": "HACKTIV8",
+      "degree": "AI for IT Development",
+      "period": "2025",
+      "location": "Online",
+      "status": "Completed",
+      "coursework": [
+        "Generative AI & LLM Fundamentals",
+        "Developing with the Gemini API",
+        "Effective Prompt Engineering",
+        "API Integration for AI Services",
+        "Introduction to Machine Learning Concepts",
+        "Implementing AI Models in Web Applications",
+        "Natural Language Processing (NLP) Basics"
       ],
-      achievements: [
-        "Completed 300+ coding challenges",
-        "Built 5 certification projects",
-        "Active community contributor",
-      ],
+      "achievements": [
+        "Successfully built and integrated a conversational chatbot using the Gemini API.",
+        "Applied advanced prompt engineering techniques to control and optimize AI model outputs.",
+        "Completed a final capstone project applying AI principles to solve a real-world problem.",
+        "Demonstrated proficiency in connecting front-end applications with AI backend services."
+      ]
     },
-    {
+    /* {
       id: 3,
       institution: "Coursera - Meta",
       degree: "Meta Front-End Developer Professional Certificate",
@@ -89,7 +91,7 @@ export default function Education() {
         "Peer review excellence award",
         "Portfolio project featured",
       ],
-    },
+    }, */
   ]
 
   return (
