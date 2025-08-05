@@ -56,7 +56,7 @@ export default function Footer() {
             <div>
               <h3 className="font-semibold mb-4">Get In Touch</h3>
               <div className="space-y-2 text-muted-foreground">
-                <p>mnabilcf14@email.com</p>
+                <p>mnabilcf14@gmail.com</p>
                 <p>+62 858-0306-7018</p>
                 <p>Magelang, IND</p>
               </div>

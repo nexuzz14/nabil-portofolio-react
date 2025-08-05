@@ -95,8 +95,8 @@ export default function Contact() {
     {
       icon: Mail,
       label: "Email",
-      value: "mnabilcf14@email.com",
-      href: "mailto:mnabilcf14@email.com",
+      value: "mnabilcf14@gmail.com",
+      href: "mailto:mnabilcf14@gmail.com",
     },
     {
       icon: Phone,
