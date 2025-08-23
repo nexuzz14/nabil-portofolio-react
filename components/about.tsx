@@ -60,7 +60,7 @@ export default function About() {
                 </div>
               </div>
 
-              <a href="/cv/Muhammad_Nabil-CV.pdf" download="Muhammad_Nabil-CV.pdf">
+              <a href="/cv/Muhammad Nabil Cahya Firdaus_CV.pdf" download="Muhammad Nabil CV.pdf">
                 <Button size="lg" className="group">
                   <Download className="mr-2 h-4 w-4 group-hover:animate-bounce" />
                   Download CV
