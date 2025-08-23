@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     to: 'mnabilcf14@gmail.com',
     subject: `New Message from Contact Form`,
     html: `
-      <h2>Pesan Baru dari Formulir Kontak</h2>
+      <h2>Pesan Baru dari Formulir Kontak Website</h2>
       <p><strong>Nama:</strong> ${name}</p>
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Pesan:</strong></p>
