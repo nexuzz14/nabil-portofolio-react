@@ -33,7 +33,7 @@ export default function Education() {
       degree: "Computer Science",
       period: "2022 - 2025",
       location: "Magelang, IND",
-      gpa: "86,55/100",
+      avg: "86,55/100",
       status: "Graduated",
       coursework: [
         "Data Structures & Algorithms",
@@ -146,10 +146,10 @@ export default function Education() {
                               <MapPin className="h-4 w-4" />
                               <span>{item.location}</span>
                             </div>
-                            {item.gpa && (
+                            {item.avg && (
                               <div className="flex items-center gap-1">
                                 <Award className="h-4 w-4" />
-                                <span>GPA: {item.gpa}</span>
+                                <span>AVG: {item.avg}</span>
                               </div>
                             )}
                           </div>
