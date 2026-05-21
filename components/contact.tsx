@@ -108,9 +108,9 @@ export default function Contact() {
     },
     {
       icon: Phone,
-      label: "Phone",
+      label: "WhatsApp / Phone",
       value: "+62 85803067018",
-      href: "tel:+6285803067018",
+      href: "https://wa.me/6285803067018",
     },
     {
       icon: MapPin,

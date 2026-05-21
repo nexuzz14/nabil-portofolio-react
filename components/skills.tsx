@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Code, Database, Wrench, Globe, Server, Smartphone, GitBranch, Palette } from "lucide-react"
+import { Code, Database, Wrench, Globe, Server, Smartphone, GitBranch, Palette, AppWindow, Network, BrainCircuit, CheckSquare } from "lucide-react"
 
 export default function Skills() {
   const [isVisible, setIsVisible] = useState(false)
@@ -27,27 +27,38 @@ export default function Skills() {
 
   const skillCategories = [
     {
-      title: "Languages & Frameworks",
-      icon: Code,
+      title: "Frontend & Mobile",
+      icon: AppWindow,
       skills: [
-        { name: "Laravel", icon: Code },
-        { name: "PHP", icon: Code },
-        { name: "Python", icon: Code },
-        { name: "HTML5", icon: Globe },
+        { name: "React.js", icon: Code },
+        { name: "Next.js", icon: Globe },
+        { name: "JavaScript", icon: Code },
+        { name: "Flutter", icon: Smartphone },
         { name: "Tailwind CSS", icon: Palette },
-        { name: "SQL", icon: Database },
       ],
     },
     {
-      title: "Tools & Technologies",
+      title: "Backend & Database",
+      icon: Server,
+      skills: [
+        { name: "Laravel", icon: Code },
+        { name: "PHP", icon: Code },
+        { name: "Node.js", icon: Network },
+        { name: "Python", icon: BrainCircuit },
+        { name: "MySQL", icon: Database },
+        { name: "PostgreSQL", icon: Database },
+      ],
+    },
+    {
+      title: "Tools & Testing",
       icon: Wrench,
       skills: [
+        { name: "RESTful API", icon: Network },
+        { name: "Manual Testing", icon: CheckSquare },
+        { name: "API Testing", icon: CheckSquare },
         { name: "Git", icon: GitBranch },
-        { name: "PostMan", icon: Database },
-        { name: "MySQL", icon: Database },
         { name: "Docker", icon: Server },
         { name: "AWS", icon: Server },
-        { name: "Figma", icon: Palette },
       ],
     },
   ];
@@ -70,7 +81,7 @@ export default function Skills() {
           </div>
 
           {/* This is the div you need to modify */}
-          <div className="grid md:grid-cols-2 gap-8 justify-center"> {/* CHANGE THIS LINE */}
+          <div className="grid md:grid-cols-3 gap-8 justify-center"> {/* CHANGE THIS LINE */}
             {skillCategories.map((category, categoryIndex) => (
               <Card
                 key={category.title}

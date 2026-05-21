@@ -31,7 +31,7 @@ export default function Footer() {
                 <span className="text-primary">{"/>"}</span>
               </div>
               <p className="text-muted-foreground mb-4">
-                Junior Full-Stack Developer passionate about creating innovative web solutions and learning new
+                Full-Stack Developer passionate about creating innovative web solutions and learning new
                 technologies.
               </p>
             </div>

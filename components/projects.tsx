@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Github, X, ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 interface Project {
   id: number
@@ -17,9 +18,16 @@ interface Project {
   liveUrl: string
   githubUrl: string
   gallery: string[]
+  badge?: string
 }
 
-export default function Projects() {
+interface ProjectsProps {
+  limit?: number
+  showViewAllLink?: boolean
+  columns?: 2 | 3
+}
+
+export default function Projects({ limit, showViewAllLink = true, columns = 2 }: ProjectsProps = {}) {
   const [isVisible, setIsVisible] = useState(false)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -43,36 +51,6 @@ export default function Projects() {
   }, [])
 
   const projects: Project[] = [
-  {
-    "id": 1,
-    "title": "E-Commerce Payment Gateway",
-    "description": "An e-commerce platform with a PHP backend, integrated with the Midtrans payment gateway and RajaOngkir shipping calculator API.",
-    "longDescription": "A functional e-commerce application built with native PHP and a MySQL database. This platform enables users to browse products, manage their shopping cart, and complete transactions securely. Key features include seamless integration with the RajaOngkir API for real-time domestic shipping cost calculations and a secure payment process handled by the Midtrans payment gateway. The system also includes an admin panel for product and order management.",
-    "image": "/chemtrank.png",
-    "technologies": ["PHP", "MySQL", "RajaOngkir API", "Midtrans API"],
-    "liveUrl": "https://example.com",
-    "githubUrl": "https://github.com/example",
-    "gallery": [
-      "/chemongkir.png",
-      "/chemtrank.png"
-    ]
-  },
-  {
-    "id": 2,
-    "title": "Inventory Management System",
-    "description": "A web-based inventory management system to track product stock, transactions, and master data, built with a React frontend and Laravel backend.",
-    "longDescription": "A comprehensive Inventory Management System designed to streamline business operations. The front-end is built with React and Material-UI, offering a clean and responsive user interface for managing master data, tracking product stock, and recording incoming/outgoing transactions. The powerful back-end is powered by Laravel, providing a robust REST API for all data operations. This system helps businesses maintain accurate inventory levels and monitor stock movements efficiently.",
-    "image": "/dashboardi.png",
-    "technologies": ["React", "Laravel", "Rest API", "Material-UI", "Firebase"],
-    "liveUrl": "https://example.com",
-    "githubUrl": "https://github.com/example",
-    "gallery": [
-      "/invenmasdat.png",
-      "/invenbarang.png",
-      "/inventransaksi.png",
-      "/invenakun.png"
-    ]
-  },
   {
     "id": 3,
     "title": "Event Planner",
@@ -104,8 +82,58 @@ export default function Projects() {
       "/travelpemesanan.png",
       "/travelkontak.png"
     ]
+  },
+  {
+    "id": 5,
+    "title": "Website Voice",
+    "description": "Voice management website developed for a freelance client.",
+    "longDescription": "A robust web application built with Laravel to handle voice data and management as part of a freelance project (Joki Proyek).",
+    "image": "/placeholder.svg",
+    "technologies": ["Laravel", "PHP", "MySQL"],
+    "liveUrl": "#",
+    "githubUrl": "#",
+    "badge": "Freelance",
+    "gallery": ["/placeholder.svg"]
+  },
+  {
+    "id": 6,
+    "title": "Web Manajemen Gudang",
+    "description": "Warehouse management system developed for efficient inventory tracking.",
+    "longDescription": "A comprehensive warehouse management system built using Laravel. Features include stock tracking, inbound/outbound logging, and reporting. Developed as a freelance project (Joki Proyek).",
+    "image": "/placeholder.svg",
+    "technologies": ["Laravel", "PHP", "MySQL"],
+    "liveUrl": "#",
+    "githubUrl": "#",
+    "badge": "Freelance",
+    "gallery": ["/placeholder.svg"]
+  },
+  {
+    "id": 7,
+    "title": "Sistem Informasi Disposisi Surat (SIDS)",
+    "description": "Mail disposition information system for structured document routing.",
+    "longDescription": "A CodeIgniter-based application developed to manage and digitize the disposition of official letters and documents within an organization. Developed as a freelance project (Joki Proyek).",
+    "image": "/placeholder.svg",
+    "technologies": ["CodeIgniter", "PHP", "MySQL"],
+    "liveUrl": "#",
+    "githubUrl": "#",
+    "badge": "Freelance",
+    "gallery": ["/placeholder.svg"]
+  },
+  {
+    "id": 8,
+    "title": "Travel Tawau Mobile App UI",
+    "description": "UI restoration for the Travel Tawau mobile application.",
+    "longDescription": "Restored and improved the user interface for the Travel Tawau mobile application using Flutter, focusing on responsive design and smooth user experience. Developed as a freelance project (Joki Proyek).",
+    "image": "/placeholder.svg",
+    "technologies": ["Flutter", "Dart", "Mobile UI"],
+    "liveUrl": "#",
+    "githubUrl": "#",
+    "badge": "Freelance",
+    "gallery": ["/placeholder.svg"]
   }
   ]
+
+  const displayedProjects = limit ? projects.slice(0, limit) : projects;
 
   const openModal = (project: Project) => {
     setSelectedProject(project)
@@ -141,7 +169,7 @@ export default function Projects() {
         }`}
       >
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+          <div className={`${columns === 3 ? "max-w-[1400px]" : "max-w-6xl"} mx-auto`}>
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -149,8 +177,8 @@ export default function Projects() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {projects.map((project, index) => (
+            <div className={`grid gap-8 ${columns === 3 ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2'}`}>
+              {displayedProjects.map((project, index) => (
                 <Card
                   key={project.id}
                   className={`group hover:shadow-xl transition-all duration-500 hover:scale-105 ${
@@ -179,7 +207,14 @@ export default function Projects() {
                     </div>
 
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-xl font-semibold">{project.title}</h3>
+                        {project.badge && (
+                          <Badge className="bg-primary text-primary-foreground">
+                            {project.badge}
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-muted-foreground mb-4">{project.description}</p>
 
                       <div className="flex flex-wrap gap-2 mb-4">
@@ -209,6 +244,16 @@ export default function Projects() {
                 </Card>
               ))}
             </div>
+
+            {showViewAllLink && (
+              <div className="flex justify-center mt-12">
+                <Link href="/projects">
+                  <Button size="lg" className="group">
+                    View All Projects
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>

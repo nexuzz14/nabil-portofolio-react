@@ -71,27 +71,46 @@ export default function Education() {
         "Demonstrated proficiency in connecting front-end applications with AI backend services."
       ]
     },
-    /* {
+    {
       id: 3,
-      institution: "Coursera - Meta",
-      degree: "Meta Front-End Developer Professional Certificate",
-      period: "2023",
+      institution: "BNSP (Badan Nasional Sertifikasi Profesi)",
+      degree: "Junior Programmer",
+      period: "2024",
+      location: "Indonesia",
+      status: "Certified",
+      coursework: ["Software Development", "Programming", "Database Design"],
+      achievements: ["Successfully passed the competency test for Junior Programmer."],
+    },
+    {
+      id: 4,
+      institution: "Dicoding",
+      degree: "Front-End Web Developer",
+      period: "2024",
       location: "Online",
-      status: "Completed",
-      coursework: [
-        "Introduction to Front-End Development",
-        "Programming with JavaScript",
-        "Version Control",
-        "HTML and CSS in depth",
-        "React Basics",
-        "Advanced React",
-      ],
-      achievements: [
-        "Capstone project: E-commerce website",
-        "Peer review excellence award",
-        "Portfolio project featured",
-      ],
-    }, */
+      status: "Certified",
+      coursework: ["HTML/CSS/JS", "Web Accessibility", "Responsive Design", "Web APIs"],
+      achievements: ["Built interactive web applications using native Web Components and APIs."],
+    },
+    {
+      id: 5,
+      institution: "Coursera - Google",
+      degree: "Google Cybersecurity",
+      period: "2024",
+      location: "Online",
+      status: "Certified",
+      coursework: ["Network Security", "Linux & SQL", "Threat Intelligence", "Python for Security"],
+      achievements: ["Learned to identify risks, vulnerabilities, and manage cyber threats effectively."],
+    },
+    {
+      id: 6,
+      institution: "Dicoding",
+      degree: "AWS Back-End Academy",
+      period: "2024",
+      location: "Online",
+      status: "Certified",
+      coursework: ["Cloud Computing", "AWS Services", "RESTful API", "Serverless Architecture"],
+      achievements: ["Developed and deployed backend services utilizing AWS cloud infrastructure."],
+    },
   ]
 
   return (

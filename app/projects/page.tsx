@@ -3,15 +3,10 @@
 import { useState, useEffect } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/header"
-import About from "@/components/about"
-import Skills from "@/components/skills"
 import Projects from "@/components/projects"
-import Experience from "@/components/experience"
-import Education from "@/components/education"
-import Contact from "@/components/contact"
 import Footer from "@/components/footer"
 
-export default function Portfolio() {
+export default function ProjectsPage() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -24,15 +19,10 @@ export default function Portfolio() {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <div className="min-h-screen bg-background text-foreground transition-colors duration-300 flex flex-col">
         <Header />
-        <main>
-          <About />
-          <Experience />
-          <Skills />
-          <Projects limit={4} />
-          <Education />
-          <Contact />
+        <main className="flex-grow pt-24">
+          <Projects showViewAllLink={false} columns={3} />
         </main>
         <Footer />
       </div>

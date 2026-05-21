@@ -3,12 +3,15 @@
 import { useState, useEffect } from "react"
 import { Moon, Sun, Menu, X } from "lucide-react"
 import { useTheme } from "next-themes"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
+  const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,15 +22,22 @@ export default function Header() {
   }, [])
 
   const scrollToSection = (sectionId: string) => {
+    setIsMobileMenuOpen(false)
+    
+    if (pathname !== "/") {
+      router.push(`/#${sectionId}`)
+      return
+    }
+
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
-      setIsMobileMenuOpen(false)
     }
   }
 
   const navItems = [
     { id: "about", label: "About" },
+    { id: "experience", label: "Experience" },
     { id: "skills", label: "Skills" },
     { id: "projects", label: "Projects" },
     { id: "education", label: "Education" },

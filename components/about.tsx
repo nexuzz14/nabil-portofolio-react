@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Download, MapPin, Calendar } from "lucide-react"
+import { Download, MapPin, Calendar, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
@@ -42,11 +42,14 @@ export default function About() {
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Hi, I'm <span className="text-primary">Muhammad Nabil Cahya Firdaus</span>
               </h1>
-              <h2 className="text-xl md:text-2xl text-muted-foreground mb-6">Junior Full-Stack Developer</h2>
+              <h2 className="text-xl md:text-2xl text-muted-foreground mb-4">Full-Stack Developer & Freelance Engineer</h2>
+              
+              <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 mb-6 shadow-sm animate-pulse">
+                🚀 Menerima Jasa Web & App (Joki Proyek)
+              </div>
+
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Highly motivated Junior Programmer passionate about developing innovative web solutions and continuous learning. 
-                Equipped with strong problem-solving skills and a fresh perspective, eager to contribute to meaningful projects. 
-                Actively seeking opportunities to grow and make a positive impact in the tech industry.
+                Full-stack developer (RPL graduate) active as an IT Developer intern at CV DBKLIK Indonesia and a freelance engineer on the Joki Proyek platform. BNSP-certified Junior Programmer passionate about building robust, scalable web applications and delivering high-quality freelance solutions.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -60,12 +63,14 @@ export default function About() {
                 </div>
               </div>
 
-              <a href="/cv/CV_MuhammadNabilCF.pdf" download="Muhammad Nabil CV.pdf">
-                <Button size="lg" className="group">
-                  <Download className="mr-2 h-4 w-4 group-hover:animate-bounce" />
-                  Download CV
-                </Button>
-              </a>
+              <div className="flex gap-4">
+                <a href="/cv/CV_MuhammadNabilCF.pdf" download="Muhammad Nabil CV.pdf">
+                  <Button size="lg" className="group">
+                    <Download className="mr-2 h-4 w-4 group-hover:animate-bounce" />
+                    Download CV
+                  </Button>
+                </a>
+              </div>
             </div>
 
             <div className="flex justify-center">
@@ -74,7 +79,7 @@ export default function About() {
                   <div className="relative w-80 h-80 rounded-lg overflow-hidden">
                     <Image
                       src="/foto.jpg"
-                      alt="Muhammad Nabil Cahya Firdaus - Junior Developer"
+                      alt="Muhammad Nabil Cahya Firdaus - Full-Stack Developer"
                       fill
                       className="object-cover"
                       priority
