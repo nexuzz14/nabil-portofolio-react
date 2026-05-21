@@ -76,7 +76,7 @@ export default function About() {
             <div className="flex justify-center">
               <Card className="p-2 bg-gradient-to-br from-primary/10 to-secondary/10">
                 <CardContent className="p-0">
-                  <div className="relative w-80 h-80 rounded-lg overflow-hidden">
+                  <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-lg overflow-hidden">
                     <Image
                       src="/foto.jpg"
                       alt="Muhammad Nabil Cahya Firdaus - Full-Stack Developer"

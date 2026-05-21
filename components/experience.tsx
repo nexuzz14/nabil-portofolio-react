@@ -32,7 +32,7 @@ export default function Experience() {
       company: "CV DBKLIK Indonesia",
       role: "IT Developer Intern",
       period: "March 2026 – Present",
-      location: "On-site / Hybrid",
+      location: "Remote",
       status: "Present",
       skills: ["Laravel", "Shopee/TikTok API", "RBAC", "Cron Sync", "HMAC-SHA256", "Dashboard Analytics"],
       achievements: [
@@ -45,7 +45,7 @@ export default function Experience() {
       company: "PT Tiga Lintang Suminar",
       role: "Web Developer & QA Intern",
       period: "December 2024 – April 2025",
-      location: "On-site / Remote",
+      location: "Hybrid",
       status: "Completed",
       skills: ["Laravel", "Midtrans API", "RajaOngkir API", "Tailwind CSS", "Manual Testing", "UAT"],
       achievements: [
