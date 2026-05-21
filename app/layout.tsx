@@ -5,8 +5,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'M Nabil CF | Full-Stack Developer & Freelance Engineer',
-  description: 'Portfolio of Muhammad Nabil Cahya Firdaus, a Full-Stack Developer and freelance engineer experienced in Laravel, React, Next.js, and more. Available for freelance projects (Joki Proyek).',
-  keywords: ['Full-stack developer', 'Laravel', 'React', 'Next.js', 'Freelance Web Developer', 'Jasa Pembuatan Website', 'Joki Proyek IT', 'Programmer', 'Magelang'],
+  description: 'Portfolio of Muhammad Nabil Cahya Firdaus, a Full-Stack Developer and freelance engineer experienced in Laravel, React, Next.js, and more. Available for freelance projects.',
+  keywords: ['Full-stack developer', 'Laravel', 'React', 'Next.js', 'Freelance Web Developer', 'Jasa Pembuatan Website', 'Programmer', 'Magelang'],
   icons: {
     icon: '/icon.png',
     shortcut: '/icon.png',
