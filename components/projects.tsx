@@ -96,11 +96,11 @@ export default function Projects({ limit, showViewAllLink = true, columns = 2 }:
     "title": "Aplikasi Point of Sales (POS)",
     "description": "Modern Point of Sale web application for retail and business management.",
     "longDescription": "A robust POS (Point of Sales) system built to manage retail transactions, track inventory, and generate sales reports efficiently. Designed with a clean and responsive user interface for seamless operational use.",
-    "image": "/placeholder.svg",
-    "technologies": ["HTML", "Tailwind CSS", "JavaScript", "PHP"],
+    "image": "/pos-login.png",
+    "technologies": ["React", "Vite", "Tailwind CSS", "Supabase"],
     "liveUrl": "#",
-    "githubUrl": "#",
-    "gallery": ["/placeholder.svg"]
+    "githubUrl": "https://github.com/nexuzz14/pos-bakebliss",
+    "gallery": ["/pos-login.png"]
   },
   {
     "id": 5,
