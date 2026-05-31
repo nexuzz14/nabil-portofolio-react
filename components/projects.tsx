@@ -52,6 +52,18 @@ export default function Projects({ limit, showViewAllLink = true, columns = 2 }:
 
   const projects: Project[] = [
   {
+    "id": 9,
+    "title": "Sistem Absensi dengan Face Recognition & Geofencing",
+    "description": "Modern employee attendance system with AI-based face recognition and location tracking to prevent fraud.",
+    "longDescription": "A robust employee attendance system developed with Laravel. It features real-time face verification with liveness detection using face-api.js (TensorFlow.js) directly in the browser, preventing spoofing. It also uses Geofencing (Haversine formula) to restrict clock-ins strictly to office premises. Includes automated alpha generation, shift and leave management, and detailed reporting with PDF/Excel exports.",
+    "image": "/absensi-login.png",
+    "technologies": ["Laravel", "PHP", "MySQL", "TensorFlow.js", "Leaflet.js"],
+    "liveUrl": "#",
+    "githubUrl": "https://github.com/nexuzz14/abensi-app",
+    "badge": "Freelance",
+    "gallery": ["/absensi-dashboard.png", "/absensi-login.png"]
+  },
+  {
     "id": 3,
     "title": "Event Planner",
     "description": "A modern and responsive landing page for an Event Planner business, designed to showcase services, packages, and a gallery.",
