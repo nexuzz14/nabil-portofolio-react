@@ -52,6 +52,18 @@ export default function Projects({ limit, showViewAllLink = true, columns = 2 }:
 
   const projects: Project[] = [
   {
+    "id": 10,
+    "title": "NEO Warehouse Management System",
+    "description": "Modern warehouse management platform for tracking stock, inventory, and goods flow with real-time alerts.",
+    "longDescription": "A comprehensive web-based Warehouse Management System (WMS) built with Laravel. It features an informative dashboard with real-time stock alerts, CRUD modules for inventory and suppliers, and automated tracking of incoming and outgoing goods. The system supports multi-role access (Admin & Manager) and utilizes a modern Indigo-themed UI with Bootstrap 5 and Vite.",
+    "image": "/warehouse-dashboard.png",
+    "technologies": ["Laravel", "PHP", "MySQL", "Bootstrap 5", "Vite"],
+    "liveUrl": "#",
+    "githubUrl": "https://github.com/NEO14/warehouse-management",
+    "badge": "Freelance",
+    "gallery": ["/warehouse-dashboard.png", "/warehouse-login.png"]
+  },
+  {
     "id": 9,
     "title": "Sistem Absensi dengan Face Recognition & Geofencing",
     "description": "Modern employee attendance system with AI-based face recognition and location tracking to prevent fraud.",
