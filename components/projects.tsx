@@ -93,31 +93,26 @@ export default function Projects({ limit, showViewAllLink = true, columns = 2 }:
   },
   {
     "id": 4,
-    "title": "Tour & Travel",
-    "description": "A promotional website for a Tour & Travel agency, featuring tour packages, special promos, and booking information.",
-    "longDescription": "A promotional website designed for a Tour & Travel agency to showcase its offerings and attract customers. Developed with HTML, Tailwind CSS, and JavaScript, the site features detailed information on travel packages, current promotions, and a clear call-to-action for bookings. The layout is fully responsive, ensuring a great user experience on all devices, from desktops to mobile phones. The design aims to be engaging and persuasive, encouraging users to explore travel options and make inquiries.",
-    "image": "/tour&travel.png",
-    "technologies": ["HTML", "Tailwind CSS", "JavaScript"],
-    "liveUrl": "https://example.com",
-    "githubUrl": "https://github.com/example",
-    "gallery": [
-      "/travelpaket.png",
-      "/travelpromo.png",
-      "/travelpemesanan.png",
-      "/travelkontak.png"
-    ]
+    "title": "Aplikasi Point of Sales (POS)",
+    "description": "Modern Point of Sale web application for retail and business management.",
+    "longDescription": "A robust POS (Point of Sales) system built to manage retail transactions, track inventory, and generate sales reports efficiently. Designed with a clean and responsive user interface for seamless operational use.",
+    "image": "/placeholder.svg",
+    "technologies": ["HTML", "Tailwind CSS", "JavaScript", "PHP"],
+    "liveUrl": "#",
+    "githubUrl": "#",
+    "gallery": ["/placeholder.svg"]
   },
   {
     "id": 5,
-    "title": "Website Voice",
-    "description": "Voice management website developed for a freelance client.",
-    "longDescription": "A robust web application built with Laravel to handle voice data and management as part of a freelance project.",
-    "image": "/placeholder.svg",
-    "technologies": ["Laravel", "PHP", "MySQL"],
+    "title": "Zaberlin TV",
+    "description": "Netflix-style educational video streaming and podcast platform.",
+    "longDescription": "Zaberlin TV is a modern streaming platform for educational videos and podcasts. Designed with a dark navy/Netflix-inspired UI (Glassmorphism, Gradient Zaberlin), it supports embedded YouTube videos, direct video uploads with an HTML5 player, and real-time view counters. Features a dynamic Hero banner and clean full-width video player.",
+    "image": "/zaberlin-home.png",
+    "technologies": ["Laravel", "PHP", "MySQL", "Tailwind CSS", "Vite"],
     "liveUrl": "#",
-    "githubUrl": "#",
+    "githubUrl": "https://github.com/nexuzz14/zaberlin",
     "badge": "Freelance",
-    "gallery": ["/placeholder.svg"]
+    "gallery": ["/zaberlin-home.png"]
   },
   {
     "id": 6,
