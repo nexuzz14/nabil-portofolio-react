@@ -113,42 +113,6 @@ export default function Projects({ limit, showViewAllLink = true, columns = 2 }:
     "githubUrl": "https://github.com/nexuzz14/zaberlin",
     "badge": "Freelance",
     "gallery": ["/zaberlin-home.png"]
-  },
-  {
-    "id": 6,
-    "title": "Web Manajemen Gudang",
-    "description": "Warehouse management system developed for efficient inventory tracking.",
-    "longDescription": "A comprehensive warehouse management system built using Laravel. Features include stock tracking, inbound/outbound logging, and reporting. Developed as a freelance project.",
-    "image": "/placeholder.svg",
-    "technologies": ["Laravel", "PHP", "MySQL"],
-    "liveUrl": "#",
-    "githubUrl": "#",
-    "badge": "Freelance",
-    "gallery": ["/placeholder.svg"]
-  },
-  {
-    "id": 7,
-    "title": "Sistem Informasi Disposisi Surat (SIDS)",
-    "description": "Mail disposition information system for structured document routing.",
-    "longDescription": "A CodeIgniter-based application developed to manage and digitize the disposition of official letters and documents within an organization. Developed as a freelance project.",
-    "image": "/placeholder.svg",
-    "technologies": ["CodeIgniter", "PHP", "MySQL"],
-    "liveUrl": "#",
-    "githubUrl": "#",
-    "badge": "Freelance",
-    "gallery": ["/placeholder.svg"]
-  },
-  {
-    "id": 8,
-    "title": "Travel Tawau Mobile App UI",
-    "description": "UI restoration for the Travel Tawau mobile application.",
-    "longDescription": "Restored and improved the user interface for the Travel Tawau mobile application using Flutter, focusing on responsive design and smooth user experience. Developed as a freelance project.",
-    "image": "/placeholder.svg",
-    "technologies": ["Flutter", "Dart", "Mobile UI"],
-    "liveUrl": "#",
-    "githubUrl": "#",
-    "badge": "Freelance",
-    "gallery": ["/placeholder.svg"]
   }
   ]
 
