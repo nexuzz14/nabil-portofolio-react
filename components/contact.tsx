@@ -40,6 +40,17 @@ export default function Contact() {
       ])
       
       if (error) throw error
+
+      // Attempt to send email notification (fails silently if email env vars are not set)
+      try {
+        await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message }),
+        })
+      } catch (emailErr) {
+        console.error("Email sending failed, but message was saved to database:", emailErr)
+      }
       
       setSubmitStatus("success")
       setName("")
