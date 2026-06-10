@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
+import { motion } from "framer-motion"
 
 interface Profile {
-  name: string
-  role: string
-  bio: string
+  full_bio: string
   resume_url: string
 }
 
@@ -24,11 +23,10 @@ export default function About() {
   if (!profile) {
     return (
       <section id="about" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24 animate-pulse">
-        <div className="h-12 w-64 bg-primary/10 rounded-lg mb-4"></div>
-        <div className="h-8 w-48 bg-primary/10 rounded-lg mb-6"></div>
-        <div className="space-y-2">
+        <div className="space-y-4">
           <div className="h-4 w-full bg-primary/5 rounded"></div>
           <div className="h-4 w-5/6 bg-primary/5 rounded"></div>
+          <div className="h-4 w-full bg-primary/5 rounded"></div>
           <div className="h-4 w-4/6 bg-primary/5 rounded"></div>
         </div>
       </section>
@@ -41,15 +39,14 @@ export default function About() {
         <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">About</h2>
       </div>
       <div>
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Hi, I'm {profile.name} 👋
-        </h1>
-        <h2 className="mt-3 text-lg font-medium tracking-tight text-foreground sm:text-xl">
-          {profile.role}
-        </h2>
-        <p className="mt-4 max-w-xs leading-normal text-muted-foreground whitespace-pre-wrap">
-          {profile.bio}
-        </p>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="space-y-4 text-muted-foreground leading-relaxed whitespace-pre-wrap"
+        >
+          {profile.full_bio}
+        </motion.div>
         
         {profile.resume_url && (
           <div className="mt-8">
@@ -57,10 +54,10 @@ export default function About() {
               href={profile.resume_url}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 font-medium text-primary hover:text-primary/80 transition-colors"
+              className="inline-flex items-center gap-2 font-medium text-primary hover:text-primary/80 transition-colors group"
             >
-              <span>View Resume</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              <span>View Full Resume</span>
+              <svg className="transition-transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
           </div>
         )}

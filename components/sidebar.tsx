@@ -2,10 +2,30 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Github, Linkedin, Mail, ArrowRight, Instagram } from "lucide-react"
+import { Github, Linkedin, Mail, Instagram } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+
+interface Profile {
+  name: string
+  role: string
+  bio: string
+  github_url: string
+  linkedin_url: string
+  email: string
+  instagram_url: string
+}
 
 export default function Sidebar() {
   const [activeSection, setActiveSection] = useState("about")
+  const [profile, setProfile] = useState<Profile | null>(null)
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data } = await supabase.from('profile').select('*').limit(1).single()
+      if (data) setProfile(data)
+    }
+    fetchProfile()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -38,15 +58,30 @@ export default function Sidebar() {
     { id: "experience", label: "Experience" },
     { id: "skills", label: "Skills" },
     { id: "projects", label: "Projects" },
-    { id: "education", label: "Education" },
+    { id: "contact", label: "Contact" },
   ]
 
-  const socialLinks = [
-    { icon: Github, href: "https://github.com/nexuzz14", label: "GitHub" },
-    { icon: Linkedin, href: "https://linkedin.com/in/mnabilcf", label: "LinkedIn" },
-    { icon: Instagram, href: "https://instagram.com/ptrcsnn", label: "Instagram" },
-    { icon: Mail, href: "mailto:mnabilcf14@gmail.com", label: "Email" },
-  ]
+  if (!profile) {
+    return (
+      <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-[40%] lg:flex-col lg:justify-between lg:py-24 py-12 z-20 animate-pulse">
+        <div>
+          <div className="h-16 w-3/4 bg-primary/10 rounded-lg mb-4"></div>
+          <div className="h-8 w-1/2 bg-primary/10 rounded-lg mb-6"></div>
+          <div className="space-y-2 mb-12">
+            <div className="h-4 w-full bg-primary/5 rounded"></div>
+            <div className="h-4 w-5/6 bg-primary/5 rounded"></div>
+            <div className="h-4 w-4/6 bg-primary/5 rounded"></div>
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  const socialLinks = []
+  if (profile.github_url) socialLinks.push({ icon: Github, href: profile.github_url, label: "GitHub" })
+  if (profile.linkedin_url) socialLinks.push({ icon: Linkedin, href: profile.linkedin_url, label: "LinkedIn" })
+  if (profile.instagram_url) socialLinks.push({ icon: Instagram, href: profile.instagram_url, label: "Instagram" })
+  if (profile.email) socialLinks.push({ icon: Mail, href: `mailto:${profile.email}`, label: "Email" })
 
   return (
     <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-[40%] lg:flex-col lg:justify-between lg:py-24 py-12 text-foreground z-20">
@@ -55,9 +90,9 @@ export default function Sidebar() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4"
+          className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 whitespace-pre-wrap"
         >
-          Muhammad Nabil <br/> Cahya Firdaus
+          {profile.name}
         </motion.h1>
         
         <motion.h2 
@@ -66,16 +101,16 @@ export default function Sidebar() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="text-xl sm:text-2xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 mb-6"
         >
-          Full-Stack Developer
+          {profile.role}
         </motion.h2>
         
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-muted-foreground leading-relaxed max-w-xs sm:max-w-md lg:max-w-sm mb-12"
+          className="text-muted-foreground leading-relaxed max-w-xs sm:max-w-md lg:max-w-sm mb-12 whitespace-pre-wrap"
         >
-          I build accessible, inclusive products and digital experiences for the web, specializing in React, Next.js, and Laravel.
+          {profile.bio}
         </motion.p>
 
         <nav className="hidden lg:block">

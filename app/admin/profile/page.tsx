@@ -13,11 +13,13 @@ interface Profile {
   name: string
   role: string
   bio: string
+  full_bio: string
   resume_url: string
   email: string
   phone: string
   github_url: string
   linkedin_url: string
+  instagram_url: string
 }
 
 export default function AdminProfile() {
@@ -50,11 +52,13 @@ export default function AdminProfile() {
         name: profile.name,
         role: profile.role,
         bio: profile.bio,
+        full_bio: profile.full_bio,
         resume_url: profile.resume_url,
         email: profile.email,
         phone: profile.phone,
         github_url: profile.github_url,
-        linkedin_url: profile.linkedin_url
+        linkedin_url: profile.linkedin_url,
+        instagram_url: profile.instagram_url
       })
       .eq('id', profile.id)
       
@@ -149,12 +153,23 @@ export default function AdminProfile() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Biography</Label>
+            <Label htmlFor="bio">Short Tagline (Sidebar)</Label>
             <Textarea 
               id="bio" 
               value={profile.bio} 
               onChange={e => setProfile({...profile, bio: e.target.value})} 
-              rows={4}
+              rows={2}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="full_bio">Full Biography (About Section)</Label>
+            <Textarea 
+              id="full_bio" 
+              value={profile.full_bio || ''} 
+              onChange={e => setProfile({...profile, full_bio: e.target.value})} 
+              rows={6}
               required
             />
           </div>
@@ -226,6 +241,15 @@ export default function AdminProfile() {
                 id="linkedin_url" 
                 value={profile.linkedin_url || ''} 
                 onChange={e => setProfile({...profile, linkedin_url: e.target.value})} 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="instagram_url">Instagram URL</Label>
+              <Input 
+                id="instagram_url" 
+                value={profile.instagram_url || ''} 
+                onChange={e => setProfile({...profile, instagram_url: e.target.value})} 
               />
             </div>
           </div>
