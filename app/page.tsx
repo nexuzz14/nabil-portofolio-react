@@ -4,9 +4,10 @@ import { useState, useEffect } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import Sidebar from "@/components/sidebar"
 import About from "@/components/about"
+import Experience from "@/components/experience"
 import Skills from "@/components/skills"
 import Projects from "@/components/projects"
-import Experience from "@/components/experience"
+import Certificates from "@/components/certificates"
 import Education from "@/components/education"
 import Contact from "@/components/contact"
 import Footer from "@/components/footer"
@@ -48,7 +49,8 @@ export default function Portfolio() {
                 <About />
                 <Experience />
                 <Skills />
-                <Projects limit={4} />
+                <Projects />
+                <Certificates />
                 <Education />
                 <Contact />
                 <Footer />
