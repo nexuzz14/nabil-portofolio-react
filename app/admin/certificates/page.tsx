@@ -23,8 +23,10 @@ export default function AdminCertificates() {
   const [isEditing, setIsEditing] = useState(false)
   const [currentCert, setCurrentCert] = useState<Partial<Certificate>>({})
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadingPdf, setUploadingPdf] = useState(false)
   
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const pdfInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetchCertificates()
@@ -107,6 +109,40 @@ export default function AdminCertificates() {
     }
   }
 
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingPdf(true)
+
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `pdfs/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+      const filePath = `certificates/${fileName}`
+
+      const { error: uploadError } = await createClient().storage
+        .from('portfolio')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        throw uploadError
+      }
+
+      const { data } = createClient().storage
+        .from('portfolio')
+        .getPublicUrl(filePath)
+
+      if (data?.publicUrl) {
+        setCurrentCert({ ...currentCert, link: data.publicUrl })
+      }
+    } catch (error: any) {
+      console.error("Error uploading pdf:", error)
+      alert("Failed to upload PDF: " + error.message)
+    } finally {
+      setUploadingPdf(false)
+    }
+  }
+
   if (loading && !isEditing) {
     return <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-t-2 border-primary rounded-full"></div></div>
   }
@@ -139,13 +175,33 @@ export default function AdminCertificates() {
               <Input value={currentCert.date || ''} onChange={e => setCurrentCert({...currentCert, date: e.target.value})} placeholder="e.g., Jan 2024 or 2024" required />
             </div>
             <div className="space-y-2">
-              <Label>Credential URL (optional)</Label>
-              <Input value={currentCert.link || ''} onChange={e => setCurrentCert({...currentCert, link: e.target.value})} placeholder="https://..." />
+              <Label>Credential URL (or Upload PDF)</Label>
+              <div className="flex gap-2">
+                <Input value={currentCert.link || ''} onChange={e => setCurrentCert({...currentCert, link: e.target.value})} placeholder="https://... or upload PDF" />
+                
+                <input 
+                  type="file" 
+                  accept="application/pdf" 
+                  className="hidden" 
+                  ref={pdfInputRef}
+                  onChange={handlePdfUpload}
+                />
+                
+                <Button 
+                  type="button" 
+                  variant="secondary" 
+                  onClick={() => pdfInputRef.current?.click()}
+                  disabled={uploadingPdf}
+                  title="Upload PDF File"
+                >
+                  {uploadingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                </Button>
+              </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Certificate File (Image or PDF)</Label>
+            <Label>Certificate Image (Thumbnail)</Label>
             <div className="flex gap-4 items-end">
               {currentCert.image && (
                 <div className="w-24 h-16 rounded border border-border/50 relative overflow-hidden bg-muted flex-shrink-0 flex items-center justify-center">
@@ -157,11 +213,11 @@ export default function AdminCertificates() {
                 </div>
               )}
               <div className="flex-1 flex gap-2">
-                <Input value={currentCert.image || ''} onChange={e => setCurrentCert({...currentCert, image: e.target.value})} placeholder="File URL or upload..." />
+                <Input value={currentCert.image || ''} onChange={e => setCurrentCert({...currentCert, image: e.target.value})} placeholder="Image URL or upload..." />
                 
                 <input 
                   type="file" 
-                  accept="image/*,application/pdf" 
+                  accept="image/*" 
                   className="hidden" 
                   ref={fileInputRef}
                   onChange={handleImageUpload}
