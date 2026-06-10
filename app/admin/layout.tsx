@@ -12,7 +12,8 @@ import {
   LogOut,
   Menu,
   X,
-  User
+  User,
+  MessageSquare
 } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -71,6 +72,7 @@ export default function AdminLayout({
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/admin/projects", label: "Projects", icon: FolderGit2 },
+    { href: "/admin/messages", label: "Messages", icon: MessageSquare },
     { href: "/admin/profile", label: "Profile", icon: User },
     { href: "/admin/experience", label: "Experience", icon: Briefcase },
     { href: "/admin/skills", label: "Skills", icon: Code2 },
