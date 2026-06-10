@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Save, User } from "lucide-react"
+import { Save, User, Upload, Loader2 } from "lucide-react"
 
 interface Profile {
   id: string
@@ -23,6 +23,7 @@ export default function AdminProfile() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingResume, setUploadingResume] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -60,6 +61,37 @@ export default function AdminProfile() {
       alert("Profile updated successfully!")
     } else {
       alert("Error updating profile")
+    }
+  }
+
+  async function handleResumeUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+
+    setUploadingResume(true)
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `resume_${Date.now()}.${fileExt}`
+      
+      const { error: uploadError } = await supabase.storage
+        .from('portfolio')
+        .upload(`resumes/${fileName}`, file)
+
+      if (uploadError) throw uploadError
+
+      const { data } = supabase.storage
+        .from('portfolio')
+        .getPublicUrl(`resumes/${fileName}`)
+
+      if (data?.publicUrl) {
+        setProfile({ ...profile, resume_url: data.publicUrl })
+        alert("Resume uploaded! Don't forget to click 'Save Changes'.")
+      }
+    } catch (error: any) {
+      console.error(error)
+      alert("Failed to upload resume: " + error.message)
+    } finally {
+      setUploadingResume(false)
     }
   }
 
@@ -125,13 +157,30 @@ export default function AdminProfile() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label htmlFor="resume_url">Resume Link (PDF URL or Path)</Label>
-            <Input 
-              id="resume_url" 
-              value={profile.resume_url} 
-              onChange={e => setProfile({...profile, resume_url: e.target.value})} 
-            />
+            <div className="flex gap-2">
+              <Input 
+                id="resume_url" 
+                value={profile.resume_url} 
+                onChange={e => setProfile({...profile, resume_url: e.target.value})} 
+              />
+              <input 
+                type="file" 
+                accept=".pdf,.doc,.docx"
+                id="resume-upload"
+                className="hidden"
+                onChange={handleResumeUpload}
+              />
+              <Button 
+                type="button" 
+                variant="secondary" 
+                onClick={() => document.getElementById('resume-upload')?.click()}
+                disabled={uploadingResume}
+              >
+                {uploadingResume ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              </Button>
+            </div>
           </div>
 
           <hr className="border-border/50" />

@@ -143,7 +143,7 @@ export default function AdminProjects() {
       const filePath = `projects/${fileName}`
 
       const { error: uploadError } = await createClient().storage
-        .from('portfolio-images')
+        .from('portfolio')
         .upload(filePath, file)
 
       if (uploadError) {
@@ -151,7 +151,7 @@ export default function AdminProjects() {
       }
 
       const { data } = createClient().storage
-        .from('portfolio-images')
+        .from('portfolio')
         .getPublicUrl(filePath)
 
       if (data?.publicUrl) {
