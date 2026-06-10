@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
-import { Mail, Github, Linkedin } from "lucide-react"
+import { Mail, Github, Linkedin, Phone } from "lucide-react"
 
 interface Profile {
   email: string
+  phone: string
   github_url: string
   linkedin_url: string
 }
@@ -39,6 +40,11 @@ export default function Contact() {
           {profile.email && (
             <a href={`mailto:${profile.email}`} className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
               <Mail className="w-5 h-5" />
+            </a>
+          )}
+          {profile.phone && (
+            <a href={`tel:${profile.phone.replace(/[^0-9+]/g, '')}`} className="w-12 h-12 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center hover:bg-secondary/80 transition-colors">
+              <Phone className="w-5 h-5" />
             </a>
           )}
           {profile.github_url && (

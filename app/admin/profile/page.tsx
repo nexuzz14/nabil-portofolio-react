@@ -15,6 +15,7 @@ interface Profile {
   bio: string
   resume_url: string
   email: string
+  phone: string
   github_url: string
   linkedin_url: string
 }
@@ -51,6 +52,7 @@ export default function AdminProfile() {
         bio: profile.bio,
         resume_url: profile.resume_url,
         email: profile.email,
+        phone: profile.phone,
         github_url: profile.github_url,
         linkedin_url: profile.linkedin_url
       })
@@ -187,14 +189,25 @@ export default function AdminProfile() {
           
           <h3 className="font-semibold text-lg">Contact & Social Links</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input 
                 id="email" 
                 type="email"
-                value={profile.email} 
+                value={profile.email || ''} 
                 onChange={e => setProfile({...profile, email: e.target.value})} 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number / WhatsApp</Label>
+              <Input 
+                id="phone" 
+                type="text"
+                placeholder="+62812..."
+                value={profile.phone || ''} 
+                onChange={e => setProfile({...profile, phone: e.target.value})} 
               />
             </div>
             
@@ -202,7 +215,7 @@ export default function AdminProfile() {
               <Label htmlFor="github_url">GitHub URL</Label>
               <Input 
                 id="github_url" 
-                value={profile.github_url} 
+                value={profile.github_url || ''} 
                 onChange={e => setProfile({...profile, github_url: e.target.value})} 
               />
             </div>
@@ -211,7 +224,7 @@ export default function AdminProfile() {
               <Label htmlFor="linkedin_url">LinkedIn URL</Label>
               <Input 
                 id="linkedin_url" 
-                value={profile.linkedin_url} 
+                value={profile.linkedin_url || ''} 
                 onChange={e => setProfile({...profile, linkedin_url: e.target.value})} 
               />
             </div>
