@@ -1,40 +1,32 @@
 "use client"
 
-import { BentoCard } from "@/components/bento-card"
-import { ArrowRight, Download } from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function About() {
   return (
-    <BentoCard className="h-full justify-between group overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10 group-hover:bg-primary/20 transition-colors duration-500"></div>
+    <section id="about" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
+      <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">About</h2>
+      </div>
       
       <div>
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl flex items-center gap-3">
-          Hi, I'm Nabil 👋
-        </h1>
-        <h2 className="mt-4 text-xl font-medium tracking-tight text-foreground sm:text-2xl">
-          Full Stack Developer
-        </h2>
-        <p className="mt-4 max-w-sm leading-normal text-muted-foreground text-sm sm:text-base">
-          I build pixel-perfect, engaging, and accessible digital experiences. Focusing on React, Next.js, and modern web technologies.
-        </p>
-      </div>
-
-      <div className="mt-8 flex gap-4">
-        <a 
-          href="#projects" 
-          className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="space-y-4 text-muted-foreground leading-relaxed"
         >
-          View Work <ArrowRight className="ml-2 w-4 h-4" />
-        </a>
-        <a 
-          href="/resume.pdf" 
-          target="_blank"
-          className="inline-flex items-center justify-center rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        >
-          Resume <Download className="ml-2 w-4 h-4" />
-        </a>
+          <p>
+            Back in 2021, I decided to dive headfirst into the world of web development. Fast-forward to today, and I've had the privilege of building software for various freelance clients, creating full-stack applications, and constantly learning new ways to solve complex digital problems.
+          </p>
+          <p>
+            My main focus these days is building accessible, inclusive products and digital experiences at the intersection of design and engineering. I specialize in <span className="font-semibold text-foreground">React, Next.js, and Laravel</span>, creating seamless user interfaces that connect with robust backends.
+          </p>
+          <p>
+            When I'm not at the computer, I'm usually hanging out with friends, reading up on the latest tech trends, or exploring new creative hobbies.
+          </p>
+        </motion.div>
       </div>
-    </BentoCard>
+    </section>
   )
 }
