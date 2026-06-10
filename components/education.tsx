@@ -1,16 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { BentoCard } from "@/components/bento-card"
+import { GraduationCap, ChevronRight, X } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import * as Dialog from "@radix-ui/react-dialog"
 
 interface Education {
   id: string
-  institution: string
   degree: string
+  school: string
   period: string
   location: string
-  status: string
+  gpa: string
   coursework: string[]
   achievements: string[]
 }
@@ -21,104 +23,79 @@ export default function Education() {
 
   useEffect(() => {
     async function fetchEducation() {
-      try {
-        const { data, error } = await supabase
-          .from('education')
-          .select('*')
-          .order('created_at', { ascending: true })
-        
-        if (error) throw error
-        if (data) setEducation(data)
-      } catch (err) {
-        console.error("Error fetching education:", err)
-      } finally {
-        setLoading(false)
-      }
+      const { data } = await supabase.from('education').select('*').order('created_at', { ascending: true })
+      if (data) setEducation(data)
+      setLoading(false)
     }
     fetchEducation()
   }, [])
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { staggerChildren: 0.2 } 
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
-  }
-
   return (
-    <section id="education" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
-      <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">Education</h2>
-      </div>
-
-      {loading ? (
-         <div className="flex justify-center items-center h-40">
-           <div className="w-8 h-8 border-t-2 border-primary rounded-full animate-spin"></div>
-         </div>
-      ) : (
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="space-y-8"
-        >
-          {education.map((item) => (
-            <motion.div key={item.id} variants={itemVariants} className="group relative">
-              <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-              
-              <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
-                <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:col-span-2">
-                  {item.period}
-                </header>
-                
-                <div className="z-10 sm:col-span-6">
-                  <h3 className="font-medium leading-snug text-foreground flex items-center gap-2">
-                    <span className="text-base font-semibold group-hover:text-primary transition-colors">{item.institution}</span>
-                    {item.status && (
-                       <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-500 border border-blue-500/20">
-                         {item.status}
-                       </span>
-                    )}
-                  </h3>
-                  
-                  <div className="text-muted-foreground mt-1 text-sm font-medium">{item.degree}</div>
-                  
-                  <div className="mt-4 text-sm leading-normal text-muted-foreground">
-                    <ul className="space-y-2">
-                      {item.achievements?.map((achievement, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-primary mt-1.5 flex-shrink-0 w-1 h-1 rounded-full bg-primary"></span>
-                          <span>{achievement}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {item.coursework && item.coursework.length > 0 && (
-                    <ul className="mt-4 flex flex-wrap" aria-label="Coursework">
-                      {item.coursework.map((course) => (
-                        <li key={course} className="mr-1.5 mt-2">
-                          <div className="flex items-center rounded-full bg-muted/50 border border-border/50 px-3 py-1 text-xs font-medium leading-5 text-muted-foreground">
-                            {course}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+    <Dialog.Root>
+      <Dialog.Trigger asChild>
+        <BentoCard delay={0.2} className="h-full group cursor-pointer hover:bg-primary/5 transition-colors">
+          <div className="flex flex-col h-full justify-between">
+            <div>
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mb-4 text-blue-500">
+                <GraduationCap className="w-5 h-5" />
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </section>
+              <h2 className="text-xl font-bold">Education</h2>
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                {education.length > 0 
+                  ? `${education[0].degree} at ${education[0].school}`
+                  : "Loading education..."}
+              </p>
+            </div>
+            
+            <div className="flex items-center text-sm font-medium text-blue-500 mt-4 group-hover:translate-x-1 transition-transform">
+              See Details <ChevronRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+        </BentoCard>
+      </Dialog.Trigger>
+
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between">
+            <Dialog.Title className="text-2xl font-bold">Education History</Dialog.Title>
+            <Dialog.Close className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+              <X className="h-5 w-5" />
+              <span className="sr-only">Close</span>
+            </Dialog.Close>
+          </div>
+
+          <div className="overflow-y-auto pr-2 mt-4 space-y-8 pb-8">
+            {education.map((edu) => (
+              <div key={edu.id} className="relative pl-6 border-l border-border/50">
+                <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[6.5px] top-1.5" />
+                <h3 className="text-lg font-bold">{edu.degree}</h3>
+                <div className="text-blue-500 font-medium">{edu.school}</div>
+                <div className="text-sm text-muted-foreground mb-4">
+                  {edu.period} • {edu.location} {edu.gpa && `• GPA: ${edu.gpa}`}
+                </div>
+                
+                {edu.coursework && edu.coursework.length > 0 && (
+                  <div className="mb-4">
+                    <span className="text-sm font-semibold text-foreground">Relevant Coursework:</span>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {edu.coursework.join(", ")}
+                    </p>
+                  </div>
+                )}
+
+                {edu.achievements && edu.achievements.length > 0 && (
+                  <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground">
+                    {edu.achievements.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
-

@@ -2,14 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
-import Sidebar from "@/components/sidebar"
 import About from "@/components/about"
 import Skills from "@/components/skills"
 import Projects from "@/components/projects"
 import Experience from "@/components/experience"
 import Education from "@/components/education"
 import Contact from "@/components/contact"
-import Footer from "@/components/footer"
 import LoadingScreen from "@/components/loading-screen"
 
 export default function Portfolio() {
@@ -39,23 +37,42 @@ export default function Portfolio() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
           </div>
 
-          <div className="mx-auto min-h-screen max-w-screen-xl px-6 py-12 font-sans md:px-12 md:py-20 lg:px-24 lg:py-0">
-            <div className="lg:flex lg:justify-between lg:gap-4 relative z-10">
+          <main className="relative z-10 mx-auto min-h-screen max-w-6xl px-4 py-12 sm:px-6 md:py-20 lg:px-8">
+            {/* BENTO GRID CONTAINER */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[200px]">
               
-              <Sidebar />
-
-              <main className="pt-24 lg:w-[55%] lg:py-24">
+              {/* Profile/Intro (2x2) */}
+              <div className="md:col-span-2 md:row-span-2">
                 <About />
+              </div>
+
+              {/* Experience Summary (1x2) */}
+              <div className="md:col-span-1 md:row-span-2">
                 <Experience />
-                <Skills />
-                <Projects limit={4} />
+              </div>
+
+              {/* Education Summary (1x1) */}
+              <div className="md:col-span-1 md:row-span-1">
                 <Education />
+              </div>
+
+              {/* Contact/Socials (1x1) */}
+              <div className="md:col-span-1 md:row-span-1">
                 <Contact />
-                <Footer />
-              </main>
+              </div>
+
+              {/* Skills Marquee (4x1 or 2x1) */}
+              <div className="md:col-span-4 md:row-span-1">
+                <Skills />
+              </div>
+
+              {/* Projects Grid Container (Takes remaining space) */}
+              <div className="md:col-span-4 h-auto pb-20">
+                <Projects />
+              </div>
 
             </div>
-          </div>
+          </main>
         </div>
       )}
     </ThemeProvider>

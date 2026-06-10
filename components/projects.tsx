@@ -1,210 +1,206 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react"
+import { BentoCard } from "@/components/bento-card"
 import { supabase } from "@/lib/supabase"
-import useEmblaCarousel from "embla-carousel-react"
+import Image from "next/image"
+import * as Dialog from "@radix-ui/react-dialog"
+import { ExternalLink, Github, ChevronLeft, ChevronRight, X } from "lucide-react"
 
 interface Project {
   id: string
   title: string
   description: string
-  image: string | string[]
   technologies: string[]
-  github: string
-  demo: string
-  badge: string
+  link_github: string
+  link_live: string
+  images: string
 }
 
-function ProjectImageCarousel({ images, title }: { images: string[], title: string }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
-  const [canScrollPrev, setCanScrollPrev] = useState(false)
-  const [canScrollNext, setCanScrollNext] = useState(false)
-
-  useEffect(() => {
-    if (!emblaApi) return
-    
-    const onSelect = () => {
-      setCanScrollPrev(emblaApi.canScrollPrev())
-      setCanScrollNext(emblaApi.canScrollNext())
-    }
-    
-    emblaApi.on('select', onSelect)
-    emblaApi.on('reInit', onSelect)
-    onSelect()
-  }, [emblaApi])
-
-  if (images.length === 1) {
-    return (
-      <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted">
-        <Image
-          src={images[0] || "/placeholder.svg"}
-          alt={title}
-          fill
-          className="object-cover transition group-hover:scale-105"
-        />
-      </div>
-    )
-  }
-
-  return (
-    <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted group/carousel">
-      <div className="overflow-hidden h-full" ref={emblaRef}>
-        <div className="flex h-full">
-          {images.map((img, i) => (
-            <div className="flex-[0_0_100%] min-w-0 relative h-full" key={i}>
-              <Image
-                src={img || "/placeholder.svg"}
-                alt={`${title} image ${i+1}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Navigation arrows appear on hover */}
-      <button 
-        className="absolute left-1 top-1/2 -translate-y-1/2 w-5 h-5 bg-background/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10 hover:bg-background disabled:opacity-0"
-        onClick={(e) => { e.preventDefault(); emblaApi?.scrollPrev(); }}
-        disabled={!canScrollPrev}
-      >
-        <ChevronLeft className="w-3 h-3" />
-      </button>
-      <button 
-        className="absolute right-1 top-1/2 -translate-y-1/2 w-5 h-5 bg-background/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10 hover:bg-background disabled:opacity-0"
-        onClick={(e) => { e.preventDefault(); emblaApi?.scrollNext(); }}
-        disabled={!canScrollNext}
-      >
-        <ChevronRight className="w-3 h-3" />
-      </button>
-
-      {/* Indicator */}
-      <div className="absolute bottom-1 right-1 bg-background/80 backdrop-blur px-1.5 py-0.5 rounded text-[8px] font-medium opacity-0 group-hover/carousel:opacity-100 transition-opacity">
-        +{images.length - 1}
-      </div>
-    </div>
-  )
-}
-
-export default function Projects({ limit }: { limit?: number }) {
+export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     async function fetchProjects() {
-      try {
-        let query = supabase.from('projects').select('*').order('created_at', { ascending: false })
-        if (limit) {
-          query = query.limit(limit)
-        }
-        
-        const { data, error } = await query
-        
-        if (error) throw error
-        if (data) setProjects(data)
-      } catch (err) {
-        console.error("Error fetching projects:", err)
-      } finally {
-        setLoading(false)
-      }
+      const { data } = await supabase.from('projects').select('*').order('created_at', { ascending: false })
+      if (data) setProjects(data)
     }
     fetchProjects()
-  }, [limit])
+  }, [])
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { staggerChildren: 0.2 } 
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
-  }
-
-  const parseImages = (imageField: string | string[]) => {
-    if (Array.isArray(imageField)) return imageField;
-    if (!imageField) return [];
+  // Parse images JSON safely
+  const getImages = (imagesJson: string) => {
     try {
-      const parsed = JSON.parse(imageField);
-      if (Array.isArray(parsed)) return parsed;
-      return [imageField];
+      const parsed = JSON.parse(imagesJson)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      return []
     } catch {
-      return [imageField];
+      return imagesJson ? [imagesJson] : []
     }
+  }
+
+  const handleNextImage = (e: React.MouseEvent, imagesList: string[]) => {
+    e.stopPropagation()
+    setCurrentImageIndex((prev) => (prev + 1) % imagesList.length)
+  }
+
+  const handlePrevImage = (e: React.MouseEvent, imagesList: string[]) => {
+    e.stopPropagation()
+    setCurrentImageIndex((prev) => (prev - 1 + imagesList.length) % imagesList.length)
   }
 
   return (
-    <section id="projects" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
-      <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">Projects</h2>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-t-2 border-primary rounded-full animate-spin"></div>
-        </div>
-      ) : (
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="group/list space-y-12"
-        >
-          {projects.map((project) => (
-            <motion.div key={project.id} variants={itemVariants} className="group relative">
-              <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-              
-              <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
-                <div className="z-10 mb-4 sm:col-span-2 sm:mb-0">
-                  <ProjectImageCarousel images={parseImages(project.image)} title={project.title} />
+    <Dialog.Root open={!!selectedProject} onOpenChange={(open) => {
+      if (!open) {
+        setSelectedProject(null)
+        setCurrentImageIndex(0)
+      }
+    }}>
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {projects.map((project, index) => {
+          const images = getImages(project.images)
+          const thumb = images.length > 0 ? images[0] : "https://via.placeholder.com/600x400"
+          
+          return (
+            <Dialog.Trigger asChild key={project.id} onClick={() => setSelectedProject(project)}>
+              <BentoCard delay={0.5 + (index * 0.1)} className="p-0 col-span-1 row-span-1 h-[300px] sm:h-[350px] group cursor-pointer overflow-hidden flex flex-col justify-end relative">
+                
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                  <Image 
+                    src={thumb} 
+                    alt={project.title} 
+                    fill 
+                    className="object-cover transition-transform duration-700 group-hover:scale-110" 
+                  />
+                  {/* Gradient Overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 </div>
                 
-                <div className="z-10 sm:col-span-6">
-                  <h3 className="font-medium leading-snug text-foreground flex items-center gap-2">
-                    <a href={project.demo !== "#" ? project.demo : project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-baseline font-semibold leading-tight text-foreground hover:text-primary focus-visible:text-primary group/link text-base">
-                      <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
-                      <span>{project.title}</span>
-                      <ExternalLink className="ml-1 inline-block h-3 w-3 shrink-0 translate-y-px transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />
-                    </a>
-                  </h3>
-                  
-                  <p className="mt-2 text-sm leading-normal text-muted-foreground">
+                {/* Content */}
+                <div className="relative z-10 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
+                  <p className="text-sm text-gray-300 line-clamp-2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
                     {project.description}
                   </p>
-
-                  <ul className="mt-4 flex flex-wrap" aria-label="Technologies used">
-                    {project.technologies?.map((tech) => (
-                      <li key={tech} className="mr-1.5 mt-2">
-                        <div className="flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium leading-5 text-primary">
-                          {tech}
-                        </div>
-                      </li>
+                  
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.slice(0, 3).map((tech, i) => (
+                      <span key={i} className="px-2 py-1 bg-white/20 backdrop-blur-md text-white rounded text-xs font-medium">
+                        {tech}
+                      </span>
                     ))}
-                  </ul>
+                    {project.technologies.length > 3 && (
+                      <span className="px-2 py-1 bg-white/20 backdrop-blur-md text-white rounded text-xs font-medium">
+                        +{project.technologies.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-                  <div className="mt-4 flex gap-4 relative z-20">
-                    {project.github !== "#" && (
-                      <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 text-xs font-medium">
-                        <Github className="h-4 w-4" />
-                        Source
+              </BentoCard>
+            </Dialog.Trigger>
+          )
+        })}
+      </div>
+
+      {/* Modal Detail Project */}
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-4xl translate-x-[-50%] translate-y-[-50%] gap-0 border bg-background shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-3xl max-h-[90vh] overflow-hidden flex flex-col md:flex-row">
+          
+          {selectedProject && (() => {
+            const images = getImages(selectedProject.images)
+            const currentImg = images.length > 0 ? images[currentImageIndex] : "https://via.placeholder.com/600x400"
+            
+            return (
+              <>
+                {/* Image Section */}
+                <div className="relative w-full md:w-1/2 h-64 md:h-auto bg-muted">
+                  <Image 
+                    src={currentImg} 
+                    alt={selectedProject.title} 
+                    fill 
+                    className="object-cover"
+                  />
+                  {images.length > 1 && (
+                    <>
+                      <button 
+                        onClick={(e) => handlePrevImage(e, images)}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors backdrop-blur-sm z-10"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button 
+                        onClick={(e) => handleNextImage(e, images)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors backdrop-blur-sm z-10"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/30 px-3 py-1.5 rounded-full backdrop-blur-md">
+                        {images.map((_, i) => (
+                          <div 
+                            key={i} 
+                            className={`w-1.5 h-1.5 rounded-full transition-all ${i === currentImageIndex ? "bg-white w-3" : "bg-white/50"}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Content Section */}
+                <div className="flex flex-col p-6 md:p-8 w-full md:w-1/2 overflow-y-auto">
+                  <div className="flex items-start justify-between mb-6">
+                    <Dialog.Title className="text-3xl font-bold">{selectedProject.title}</Dialog.Title>
+                    <Dialog.Close className="rounded-full w-8 h-8 flex items-center justify-center bg-secondary hover:bg-secondary/80 transition-colors">
+                      <X className="h-4 w-4" />
+                    </Dialog.Close>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {selectedProject.technologies.map((tech, i) => (
+                      <span key={i} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-muted-foreground leading-relaxed mb-8 whitespace-pre-wrap flex-grow">
+                    {selectedProject.description}
+                  </p>
+
+                  <div className="flex gap-4 mt-auto pt-4 border-t border-border/50">
+                    {selectedProject.link_live && (
+                      <a 
+                        href={selectedProject.link_live} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" /> Live Demo
+                      </a>
+                    )}
+                    {selectedProject.link_github && (
+                      <a 
+                        href={selectedProject.link_github} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 bg-secondary text-secondary-foreground py-3 rounded-xl font-medium hover:bg-secondary/80 transition-colors"
+                      >
+                        <Github className="w-4 h-4" /> Repository
                       </a>
                     )}
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </section>
+              </>
+            )
+          })()}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
-
