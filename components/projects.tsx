@@ -1,337 +1,209 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ExternalLink, Github, X, ChevronLeft, ChevronRight } from "lucide-react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
-import Link from "next/link"
+import { motion } from "framer-motion"
+import { ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+import useEmblaCarousel from "embla-carousel-react"
 
 interface Project {
-  id: number
+  id: string
   title: string
   description: string
-  longDescription: string
-  image: string
+  image: string | string[]
   technologies: string[]
-  liveUrl: string
-  githubUrl: string
-  gallery: string[]
-  badge?: string
+  github: string
+  demo: string
+  badge: string
 }
 
-interface ProjectsProps {
-  limit?: number
-  showViewAllLink?: boolean
-  columns?: 2 | 3
-}
-
-export default function Projects({ limit, showViewAllLink = true, columns = 2 }: ProjectsProps = {}) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const sectionRef = useRef<HTMLElement>(null)
+function ProjectImageCarousel({ images, title }: { images: string[], title: string }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 },
+    if (!emblaApi) return
+    
+    const onSelect = () => {
+      setCanScrollPrev(emblaApi.canScrollPrev())
+      setCanScrollNext(emblaApi.canScrollNext())
+    }
+    
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+    onSelect()
+  }, [emblaApi])
+
+  if (images.length === 1) {
+    return (
+      <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted">
+        <Image
+          src={images[0] || "/placeholder.svg"}
+          alt={title}
+          fill
+          className="object-cover transition group-hover:scale-105"
+        />
+      </div>
     )
+  }
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
+  return (
+    <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted group/carousel">
+      <div className="overflow-hidden h-full" ref={emblaRef}>
+        <div className="flex h-full">
+          {images.map((img, i) => (
+            <div className="flex-[0_0_100%] min-w-0 relative h-full" key={i}>
+              <Image
+                src={img || "/placeholder.svg"}
+                alt={`${title} image ${i+1}`}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Navigation arrows appear on hover */}
+      <button 
+        className="absolute left-1 top-1/2 -translate-y-1/2 w-5 h-5 bg-background/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10 hover:bg-background disabled:opacity-0"
+        onClick={(e) => { e.preventDefault(); emblaApi?.scrollPrev(); }}
+        disabled={!canScrollPrev}
+      >
+        <ChevronLeft className="w-3 h-3" />
+      </button>
+      <button 
+        className="absolute right-1 top-1/2 -translate-y-1/2 w-5 h-5 bg-background/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10 hover:bg-background disabled:opacity-0"
+        onClick={(e) => { e.preventDefault(); emblaApi?.scrollNext(); }}
+        disabled={!canScrollNext}
+      >
+        <ChevronRight className="w-3 h-3" />
+      </button>
+
+      {/* Indicator */}
+      <div className="absolute bottom-1 right-1 bg-background/80 backdrop-blur px-1.5 py-0.5 rounded text-[8px] font-medium opacity-0 group-hover/carousel:opacity-100 transition-opacity">
+        +{images.length - 1}
+      </div>
+    </div>
+  )
+}
+
+export default function Projects({ limit }: { limit?: number }) {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        let query = supabase.from('projects').select('*').order('created_at', { ascending: false })
+        if (limit) {
+          query = query.limit(limit)
+        }
+        
+        const { data, error } = await query
+        
+        if (error) throw error
+        if (data) setProjects(data)
+      } catch (err) {
+        console.error("Error fetching projects:", err)
+      } finally {
+        setLoading(false)
+      }
     }
+    fetchProjects()
+  }, [limit])
 
-    return () => observer.disconnect()
-  }, [])
-
-  const projects: Project[] = [
-  {
-    "id": 10,
-    "title": "NEO Warehouse Management System",
-    "description": "Modern warehouse management platform for tracking stock, inventory, and goods flow with real-time alerts.",
-    "longDescription": "A comprehensive web-based Warehouse Management System (WMS) built with Laravel. It features an informative dashboard with real-time stock alerts, CRUD modules for inventory and suppliers, and automated tracking of incoming and outgoing goods. The system supports multi-role access (Admin & Manager) and utilizes a modern Indigo-themed UI with Bootstrap 5 and Vite.",
-    "image": "/warehouse-dashboard.png",
-    "technologies": ["Laravel", "PHP", "MySQL", "Bootstrap 5", "Vite"],
-    "liveUrl": "#",
-    "githubUrl": "https://github.com/NEO14/warehouse-management",
-    "badge": "Freelance",
-    "gallery": ["/warehouse-dashboard.png", "/warehouse-login.png"]
-  },
-  {
-    "id": 9,
-    "title": "Sistem Absensi dengan Face Recognition & Geofencing",
-    "description": "Modern employee attendance system with AI-based face recognition and location tracking to prevent fraud.",
-    "longDescription": "A robust employee attendance system developed with Laravel. It features real-time face verification with liveness detection using face-api.js (TensorFlow.js) directly in the browser, preventing spoofing. It also uses Geofencing (Haversine formula) to restrict clock-ins strictly to office premises. Includes automated alpha generation, shift and leave management, and detailed reporting with PDF/Excel exports.",
-    "image": "/absensi-login.png",
-    "technologies": ["Laravel", "PHP", "MySQL", "TensorFlow.js", "Leaflet.js"],
-    "liveUrl": "#",
-    "githubUrl": "https://github.com/nexuzz14/abensi-app",
-    "badge": "Freelance",
-    "gallery": ["/absensi-dashboard.png", "/absensi-login.png"]
-  },
-  {
-    "id": 3,
-    "title": "Event Planner",
-    "description": "A modern and responsive landing page for an Event Planner business, designed to showcase services, packages, and a gallery.",
-    "longDescription": "A visually appealing landing page for an Event Planner service, built from scratch using HTML, Tailwind CSS, and vanilla JavaScript. The site is fully responsive and designed to attract potential clients by showcasing available service packages, a gallery of past events, customer testimonials, and an easy-to-use contact section. The focus is on a modern design and a smooth user experience to effectively market the business.",
-    "image": "/eventplanner.png",
-    "technologies": ["HTML", "JavaScript", "Tailwind CSS"],
-    "liveUrl": "https://example.com",
-    "githubUrl": "https://github.com/example",
-    "gallery": [
-      "/eventpaket.png",
-      "/eventgaleri.png",
-      "/eventtesti.png",
-      "/eventkontak.png"
-    ]
-  },
-  {
-    "id": 4,
-    "title": "Aplikasi Point of Sales (POS)",
-    "description": "Modern Point of Sale web application for retail and business management.",
-    "longDescription": "A robust POS (Point of Sales) system built to manage retail transactions, track inventory, and generate sales reports efficiently. Designed with a clean and responsive user interface for seamless operational use.",
-    "image": "/pos-login.png",
-    "technologies": ["React", "Vite", "Tailwind CSS", "Supabase"],
-    "liveUrl": "#",
-    "githubUrl": "https://github.com/nexuzz14/pos-bakebliss",
-    "gallery": ["/pos-login.png"]
-  },
-  {
-    "id": 5,
-    "title": "Zaberlin TV",
-    "description": "Netflix-style educational video streaming and podcast platform.",
-    "longDescription": "Zaberlin TV is a modern streaming platform for educational videos and podcasts. Designed with a dark navy/Netflix-inspired UI (Glassmorphism, Gradient Zaberlin), it supports embedded YouTube videos, direct video uploads with an HTML5 player, and real-time view counters. Features a dynamic Hero banner and clean full-width video player.",
-    "image": "/zaberlin-home.png",
-    "technologies": ["Laravel", "PHP", "MySQL", "Tailwind CSS", "Vite"],
-    "liveUrl": "#",
-    "githubUrl": "https://github.com/nexuzz14/zaberlin",
-    "badge": "Freelance",
-    "gallery": ["/zaberlin-home.png"]
-  }
-  ]
-
-  const displayedProjects = limit ? projects.slice(0, limit) : projects;
-
-  const openModal = (project: Project) => {
-    setSelectedProject(project)
-    setCurrentImageIndex(0)
-    document.body.style.overflow = "hidden"
-  }
-
-  const closeModal = () => {
-    setSelectedProject(null)
-    setCurrentImageIndex(0)
-    document.body.style.overflow = "unset"
-  }
-
-  const nextImage = () => {
-    if (selectedProject) {
-      setCurrentImageIndex((prev) => (prev === selectedProject.gallery.length - 1 ? 0 : prev + 1))
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.2 } 
     }
   }
 
-  const prevImage = () => {
-    if (selectedProject) {
-      setCurrentImageIndex((prev) => (prev === 0 ? selectedProject.gallery.length - 1 : prev - 1))
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } }
+  }
+
+  const parseImages = (imageField: string | string[]) => {
+    if (Array.isArray(imageField)) return imageField;
+    if (!imageField) return [];
+    try {
+      const parsed = JSON.parse(imageField);
+      if (Array.isArray(parsed)) return parsed;
+      return [imageField];
+    } catch {
+      return [imageField];
     }
   }
 
   return (
-    <>
-      <section
-        id="projects"
-        ref={sectionRef}
-        className={`py-20 transition-all duration-1000 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className={`${columns === 3 ? "max-w-[1400px]" : "max-w-6xl"} mx-auto`}>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                A showcase of my recent work and the technologies I've been exploring.
-              </p>
-            </div>
+    <section id="projects" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
+      <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">Projects</h2>
+      </div>
 
-            <div className={`grid gap-8 ${columns === 3 ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-2'}`}>
-              {displayedProjects.map((project, index) => (
-                <Card
-                  key={project.id}
-                  className={`group hover:shadow-xl transition-all duration-500 hover:scale-105 ${
-                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
-                  style={{ transitionDelay: `${index * 200}ms` }}
-                >
-                  <CardContent className="p-0">
-                    <div className="relative overflow-hidden rounded-t-lg">
-                      <Image
-                        src={project.image || "/placeholder.svg"}
-                        alt={project.title}
-                        width={400}
-                        height={300}
-                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Button
-                          onClick={() => openModal(project)}
-                          variant="secondary"
-                          className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
-                        >
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-xl font-semibold">{project.title}</h3>
-                        {project.badge && (
-                          <Badge className="bg-primary text-primary-foreground">
-                            {project.badge}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-muted-foreground mb-4">{project.description}</p>
-
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.technologies.map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      {/* <div className="flex gap-2">
-                        <Button size="sm" variant="outline" asChild>
-                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            Live Demo
-                          </a>
-                        </Button>
-                        <Button size="sm" variant="outline" asChild>
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                            <Github className="mr-2 h-4 w-4" />
-                            Code
-                          </a>
-                        </Button>
-                      </div> */}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {showViewAllLink && (
-              <div className="flex justify-center mt-12">
-                <Link href="/projects">
-                  <Button size="lg" className="group">
-                    View All Projects
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-40">
+          <div className="w-8 h-8 border-t-2 border-primary rounded-full animate-spin"></div>
         </div>
-      </section>
-
-      {/* Project Modal */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between">
-              <h3 className="text-2xl font-bold">{selectedProject.title}</h3>
-              <Button variant="ghost" size="icon" onClick={closeModal}>
-                <X className="h-6 w-6" />
-              </Button>
-            </div>
-
-            <div className="p-6">
-              {/* Image Carousel */}
-              <div className="relative mb-6">
-                <div className="relative h-80 rounded-lg overflow-hidden">
-                  <Image
-                    src={selectedProject.gallery[currentImageIndex] || "/placeholder.svg"}
-                    alt={`${selectedProject.title} - Image ${currentImageIndex + 1}`}
-                    fill
-                    className="object-cover"
-                  />
+      ) : (
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="group/list space-y-12"
+        >
+          {projects.map((project) => (
+            <motion.div key={project.id} variants={itemVariants} className="group relative">
+              <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+              
+              <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
+                <div className="z-10 mb-4 sm:col-span-2 sm:mb-0">
+                  <ProjectImageCarousel images={parseImages(project.image)} title={project.title} />
                 </div>
+                
+                <div className="z-10 sm:col-span-6">
+                  <h3 className="font-medium leading-snug text-foreground flex items-center gap-2">
+                    <a href={project.demo !== "#" ? project.demo : project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-baseline font-semibold leading-tight text-foreground hover:text-primary focus-visible:text-primary group/link text-base">
+                      <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
+                      <span>{project.title}</span>
+                      <ExternalLink className="ml-1 inline-block h-3 w-3 shrink-0 translate-y-px transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />
+                    </a>
+                  </h3>
+                  
+                  <p className="mt-2 text-sm leading-normal text-muted-foreground">
+                    {project.description}
+                  </p>
 
-                {selectedProject.gallery.length > 1 && (
-                  <>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      className="absolute left-2 top-1/2 transform -translate-y-1/2"
-                      onClick={prevImage}
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                      onClick={nextImage}
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
-                  </>
-                )}
-
-                <div className="flex justify-center mt-4 gap-2">
-                  {selectedProject.gallery.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === currentImageIndex ? "bg-primary" : "bg-muted"
-                      }`}
-                      onClick={() => setCurrentImageIndex(index)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Project Details */}
-              <div className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed">{selectedProject.longDescription}</p>
-
-                <div>
-                  <h4 className="font-semibold mb-2">Technologies Used:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.technologies.map((tech) => (
-                      <Badge key={tech} variant="secondary">
-                        {tech}
-                      </Badge>
+                  <ul className="mt-4 flex flex-wrap" aria-label="Technologies used">
+                    {project.technologies?.map((tech) => (
+                      <li key={tech} className="mr-1.5 mt-2">
+                        <div className="flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium leading-5 text-primary">
+                          {tech}
+                        </div>
+                      </li>
                     ))}
+                  </ul>
+
+                  <div className="mt-4 flex gap-4 relative z-20">
+                    {project.github !== "#" && (
+                      <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 text-xs font-medium">
+                        <Github className="h-4 w-4" />
+                        Source
+                      </a>
+                    )}
                   </div>
                 </div>
-
-               {/*  <div className="flex gap-4 pt-4">
-                  <Button asChild>
-                    <a href={selectedProject.liveUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      View Live Demo
-                    </a>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
-                      <Github className="mr-2 h-4 w-4" />
-                      View Source Code
-                    </a>
-                  </Button>
-                </div> */}
               </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          ))}
+        </motion.div>
       )}
-    </>
+    </section>
   )
 }

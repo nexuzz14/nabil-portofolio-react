@@ -1,153 +1,120 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Briefcase, Calendar, MapPin } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+
+interface Experience {
+  id: string
+  title: string
+  company: string
+  period: string
+  location: string
+  status: string
+  skills: string[]
+  achievements: string[]
+}
 
 export default function Experience() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
+  const [experience, setExperience] = useState<Experience[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 },
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
+    async function fetchExperience() {
+      try {
+        const { data, error } = await supabase
+          .from('experiences')
+          .select('*')
+          .order('created_at', { ascending: true })
+        
+        if (error) throw error
+        if (data) setExperience(data)
+      } catch (err) {
+        console.error("Error fetching experience:", err)
+      } finally {
+        setLoading(false)
+      }
     }
-
-    return () => observer.disconnect()
+    fetchExperience()
   }, [])
 
-  const experience = [
-    {
-      id: 1,
-      company: "CV DBKLIK Indonesia",
-      role: "IT Developer Intern",
-      period: "March 2026 – Present",
-      location: "Remote",
-      status: "Present",
-      skills: ["Laravel", "Shopee/TikTok API", "RBAC", "Cron Sync", "HMAC-SHA256", "Dashboard Analytics"],
-      achievements: [
-        "Built multi-marketplace Laravel portal (Shopee, TikTok Shop, Tokopedia) with dashboard analytics, SLA tracking, AMS affiliate module, and TikTok & Shopee API v2 integration.",
-        "Delivered CRUD modules (Promo, Support Brand, Campaign Marketplace) with RBAC, Excel/CSV import-export, live search, and filter — submitted via PR to develop/staging environments."
-      ],
-    },
-    {
-      id: 2,
-      company: "PT Tiga Lintang Suminar",
-      role: "Web Developer & QA Intern",
-      period: "December 2024 – April 2025",
-      location: "Hybrid",
-      status: "Completed",
-      skills: ["Laravel", "Midtrans API", "RajaOngkir API", "Tailwind CSS", "Manual Testing", "UAT"],
-      achievements: [
-        "Integrated Midtrans payment gateway, RajaOngkir API, and backend logic for an inventory system using Laravel.",
-        "Performed manual testing, User Acceptance Testing (UAT), and wrote technical documentation.",
-        "Developed responsive UI for event planner & travel sites using HTML, Tailwind CSS, and JavaScript."
-      ],
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.2 } 
     }
-  ]
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } }
+  }
 
   return (
-    <section
-      id="experience"
-      ref={sectionRef}
-      className={`py-20 transition-all duration-1000 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Professional Experience</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              My work history and professional journey in web development and software engineering.
-            </p>
-          </div>
-
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-primary/20 hidden md:block" />
-
-            <div className="space-y-8">
-              {experience.map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`relative transition-all duration-700 ${
-                    isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-                  }`}
-                  style={{ transitionDelay: `${index * 300}ms` }}
-                >
-                  {/* Timeline dot */}
-                  <div className="absolute left-6 top-6 w-4 h-4 bg-primary rounded-full border-4 border-background hidden md:block" />
-
-                  <Card className="md:ml-16 hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-primary">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Briefcase className="h-5 w-5 text-primary" />
-                            <h3 className="text-xl font-semibold">{item.role}</h3>
-                          </div>
-                          <h4 className="text-lg text-primary font-medium mb-2">{item.company}</h4>
-
-                          <div className="flex flex-col sm:flex-row gap-4 text-sm text-muted-foreground mb-4">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              <span>{item.period}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4" />
-                              <span>{item.location}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Badge variant={item.status === "Present" ? "default" : "secondary"} className="self-start">
-                          {item.status}
-                        </Badge>
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                          <h5 className="font-medium mb-3">Key Technologies:</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {item.skills.map((skill) => (
-                              <Badge key={skill} variant="outline" className="text-xs bg-muted/50">
-                                {skill}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <h5 className="font-medium mb-3">Responsibilities & Achievements:</h5>
-                          <ul className="space-y-2 text-sm text-muted-foreground">
-                            {item.achievements.map((achievement, achievementIndex) => (
-                              <li key={achievementIndex} className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span className="leading-relaxed">{achievement}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <section id="experience" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
+      <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">Experience</h2>
       </div>
+
+      {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="w-8 h-8 border-t-2 border-primary rounded-full animate-spin"></div>
+          </div>
+      ) : (
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="space-y-8"
+        >
+          {experience.map((item) => (
+            <motion.div key={item.id} variants={itemVariants} className="group relative">
+              <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+              
+              <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
+                <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:col-span-2">
+                  {item.period}
+                </header>
+                
+                <div className="z-10 sm:col-span-6">
+                  <h3 className="font-medium leading-snug text-foreground">
+                    <div>
+                      <span className="text-base font-semibold group-hover:text-primary transition-colors">{item.title}</span>
+                    </div>
+                    <div className="text-muted-foreground">{item.company}</div>
+                  </h3>
+                  
+                  <div className="mt-2 text-sm leading-normal text-muted-foreground">
+                    <ul className="space-y-2">
+                      {item.achievements?.map((achievement, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-primary mt-1.5 flex-shrink-0 w-1 h-1 rounded-full bg-primary"></span>
+                          <span>{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <ul className="mt-4 flex flex-wrap" aria-label="Technologies used">
+                    {item.skills?.map((skill) => (
+                      <li key={skill} className="mr-1.5 mt-2">
+                        <div className="flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium leading-5 text-primary">
+                          {skill}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </section>
   )
 }

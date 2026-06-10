@@ -1,216 +1,123 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { GraduationCap, Calendar, MapPin, Award } from "lucide-react"
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import { supabase } from "@/lib/supabase"
+
+interface Education {
+  id: string
+  institution: string
+  degree: string
+  period: string
+  location: string
+  status: string
+  coursework: string[]
+  achievements: string[]
+}
 
 export default function Education() {
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
+  const [education, setEducation] = useState<Education[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 },
-    )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
+    async function fetchEducation() {
+      try {
+        const { data, error } = await supabase
+          .from('education')
+          .select('*')
+          .order('created_at', { ascending: true })
+        
+        if (error) throw error
+        if (data) setEducation(data)
+      } catch (err) {
+        console.error("Error fetching education:", err)
+      } finally {
+        setLoading(false)
+      }
     }
-
-    return () => observer.disconnect()
+    fetchEducation()
   }, [])
 
-  const education = [
-    {
-      id: 1,
-      institution: "Vocational High School 2 Magelang",
-      degree: "Computer Science",
-      period: "2022 - 2025",
-      location: "Magelang, IND",
-      avg: "86,55/100",
-      status: "Graduated",
-      coursework: [
-        "Data Structures & Algorithms",
-        "Web Development",
-        "Database Systems",
-        "Software Engineering",
-        "Mobile App Development",
-        "2D & 3D Design",
-      ],
-      achievements: [
-        "Make a game 2D using Unity Engine",
-        "Make a mobile app for education bullying",
-      ],
-    },
-    {
-      "id": 2,
-      "institution": "HACKTIV8",
-      "degree": "AI for IT Development",
-      "period": "2025",
-      "location": "Online",
-      "status": "Completed",
-      "coursework": [
-        "Generative AI & LLM Fundamentals",
-        "Developing with the Gemini API",
-        "Effective Prompt Engineering",
-        "API Integration for AI Services",
-        "Introduction to Machine Learning Concepts",
-        "Implementing AI Models in Web Applications",
-        "Natural Language Processing (NLP) Basics"
-      ],
-      "achievements": [
-        "Successfully built and integrated a conversational chatbot using the Gemini API.",
-        "Applied advanced prompt engineering techniques to control and optimize AI model outputs.",
-        "Completed a final capstone project applying AI principles to solve a real-world problem.",
-        "Demonstrated proficiency in connecting front-end applications with AI backend services."
-      ]
-    },
-    {
-      id: 3,
-      institution: "BNSP (Badan Nasional Sertifikasi Profesi)",
-      degree: "Junior Programmer",
-      period: "2025",
-      location: "Indonesia",
-      status: "Certified",
-      coursework: ["Software Development", "Programming", "Database Design"],
-      achievements: ["Successfully passed the competency test for Junior Programmer."],
-    },
-    {
-      id: 4,
-      institution: "Dicoding",
-      degree: "Front-End Web Developer",
-      period: "2025",
-      location: "Online",
-      status: "Certified",
-      coursework: ["HTML/CSS/JS", "Web Accessibility", "Responsive Design", "Web APIs"],
-      achievements: ["Built interactive web applications using native Web Components and APIs."],
-    },
-    {
-      id: 5,
-      institution: "Coursera - Google",
-      degree: "Google Cybersecurity",
-      period: "2025",
-      location: "Online",
-      status: "Certified",
-      coursework: ["Network Security", "Linux & SQL", "Threat Intelligence", "Python for Security"],
-      achievements: ["Learned to identify risks, vulnerabilities, and manage cyber threats effectively."],
-    },
-    {
-      id: 6,
-      institution: "Dicoding",
-      degree: "AWS Back-End Academy",
-      period: "2024",
-      location: "Online",
-      status: "Certified",
-      coursework: ["Cloud Computing", "AWS Services", "RESTful API", "Serverless Architecture"],
-      achievements: ["Developed and deployed backend services utilizing AWS cloud infrastructure."],
-    },
-  ]
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.2 } 
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } }
+  }
 
   return (
-    <section
-      id="education"
-      ref={sectionRef}
-      className={`py-20 bg-muted/30 transition-all duration-1000 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Education & Certifications</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              My academic journey and continuous learning path in computer science and web development.
-            </p>
-          </div>
-
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-primary/20 hidden md:block" />
-
-            <div className="space-y-8">
-              {education.map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`relative transition-all duration-700 ${
-                    isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-                  }`}
-                  style={{ transitionDelay: `${index * 300}ms` }}
-                >
-                  {/* Timeline dot */}
-                  <div className="absolute left-6 top-6 w-4 h-4 bg-primary rounded-full border-4 border-background hidden md:block" />
-
-                  <Card className="md:ml-16 hover:shadow-lg transition-shadow duration-300">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <GraduationCap className="h-5 w-5 text-primary" />
-                            <h3 className="text-xl font-semibold">{item.institution}</h3>
-                          </div>
-                          <h4 className="text-lg text-primary font-medium mb-2">{item.degree}</h4>
-
-                          <div className="flex flex-col sm:flex-row gap-4 text-sm text-muted-foreground mb-4">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              <span>{item.period}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4" />
-                              <span>{item.location}</span>
-                            </div>
-                            {item.avg && (
-                              <div className="flex items-center gap-1">
-                                <Award className="h-4 w-4" />
-                                <span>AVG: {item.avg}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <Badge variant={item.status === "Graduated" ? "default" : "secondary"} className="self-start">
-                          {item.status}
-                        </Badge>
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                          <h5 className="font-medium mb-3">Relevant Coursework:</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {item.coursework.map((course) => (
-                              <Badge key={course} variant="outline" className="text-xs">
-                                {course}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <h5 className="font-medium mb-3">Key Achievements:</h5>
-                          <ul className="space-y-1 text-sm text-muted-foreground">
-                            {item.achievements.map((achievement, achievementIndex) => (
-                              <li key={achievementIndex} className="flex items-start gap-2">
-                                <span className="text-primary mt-1.5">•</span>
-                                <span>{achievement}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <section id="education" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
+      <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-background/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">Education</h2>
       </div>
+
+      {loading ? (
+         <div className="flex justify-center items-center h-40">
+           <div className="w-8 h-8 border-t-2 border-primary rounded-full animate-spin"></div>
+         </div>
+      ) : (
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="space-y-8"
+        >
+          {education.map((item) => (
+            <motion.div key={item.id} variants={itemVariants} className="group relative">
+              <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+              
+              <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
+                <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground sm:col-span-2">
+                  {item.period}
+                </header>
+                
+                <div className="z-10 sm:col-span-6">
+                  <h3 className="font-medium leading-snug text-foreground flex items-center gap-2">
+                    <span className="text-base font-semibold group-hover:text-primary transition-colors">{item.institution}</span>
+                    {item.status && (
+                       <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-500 border border-blue-500/20">
+                         {item.status}
+                       </span>
+                    )}
+                  </h3>
+                  
+                  <div className="text-muted-foreground mt-1 text-sm font-medium">{item.degree}</div>
+                  
+                  <div className="mt-4 text-sm leading-normal text-muted-foreground">
+                    <ul className="space-y-2">
+                      {item.achievements?.map((achievement, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-primary mt-1.5 flex-shrink-0 w-1 h-1 rounded-full bg-primary"></span>
+                          <span>{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {item.coursework && item.coursework.length > 0 && (
+                    <ul className="mt-4 flex flex-wrap" aria-label="Coursework">
+                      {item.coursework.map((course) => (
+                        <li key={course} className="mr-1.5 mt-2">
+                          <div className="flex items-center rounded-full bg-muted/50 border border-border/50 px-3 py-1 text-xs font-medium leading-5 text-muted-foreground">
+                            {course}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </section>
   )
 }
