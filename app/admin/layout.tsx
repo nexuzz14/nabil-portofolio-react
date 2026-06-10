@@ -11,7 +11,8 @@ import {
   FolderGit2, 
   LogOut,
   Menu,
-  X
+  X,
+  User
 } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
@@ -70,6 +71,7 @@ export default function AdminLayout({
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/admin/projects", label: "Projects", icon: FolderGit2 },
+    { href: "/admin/profile", label: "Profile", icon: User },
     { href: "/admin/experience", label: "Experience", icon: Briefcase },
     { href: "/admin/skills", label: "Skills", icon: Code2 },
     { href: "/admin/education", label: "Education", icon: GraduationCap },
