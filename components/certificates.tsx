@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { ExternalLink, Award } from "lucide-react"
+import { ExternalLink, Award, FileText } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import Image from "next/image"
 
@@ -79,13 +79,20 @@ export default function Certificates() {
             <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4 items-center">
               <div className="z-10 mb-4 sm:col-span-2 sm:mb-0">
                 {cert.image ? (
-                  <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted">
-                    <Image
-                      src={cert.image}
-                      alt={cert.title}
-                      fill
-                      className="object-cover transition group-hover:scale-105"
-                    />
+                  <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted flex items-center justify-center">
+                    {cert.image.includes('.pdf') ? (
+                      <a href={cert.image} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col items-center justify-center text-primary hover:bg-primary/5 transition-colors">
+                        <FileText className="w-6 h-6 mb-1" />
+                        <span className="text-[10px] font-medium uppercase tracking-wider">PDF File</span>
+                      </a>
+                    ) : (
+                      <Image
+                        src={cert.image}
+                        alt={cert.title}
+                        fill
+                        className="object-cover transition group-hover:scale-105"
+                      />
+                    )}
                   </div>
                 ) : (
                   <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-primary/10 flex items-center justify-center text-primary">
@@ -96,8 +103,8 @@ export default function Certificates() {
               
               <div className="z-10 sm:col-span-6">
                 <h3 className="font-medium leading-snug text-foreground flex items-center gap-2">
-                  {cert.link ? (
-                    <a href={cert.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-baseline font-semibold leading-tight text-foreground hover:text-primary focus-visible:text-primary group/link text-base">
+                  {(cert.link || cert.image) ? (
+                    <a href={cert.link || cert.image} target="_blank" rel="noopener noreferrer" className="inline-flex items-baseline font-semibold leading-tight text-foreground hover:text-primary focus-visible:text-primary group/link text-base">
                       <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
                       <span>{cert.title}</span>
                       <ExternalLink className="ml-1 inline-block h-3 w-3 shrink-0 translate-y-px transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />

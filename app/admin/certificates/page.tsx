@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Pencil, Trash2, X, Save, Upload, Loader2, Image as ImageIcon } from "lucide-react"
+import { Plus, Pencil, Trash2, X, Save, Upload, Loader2, Image as ImageIcon, FileText } from "lucide-react"
 import Image from "next/image"
 
 interface Certificate {
@@ -145,19 +145,23 @@ export default function AdminCertificates() {
           </div>
 
           <div className="space-y-2">
-            <Label>Certificate Image</Label>
+            <Label>Certificate File (Image or PDF)</Label>
             <div className="flex gap-4 items-end">
               {currentCert.image && (
-                <div className="w-24 h-16 rounded border border-border/50 relative overflow-hidden bg-muted flex-shrink-0">
-                  <Image src={currentCert.image} alt="Preview" fill className="object-cover" />
+                <div className="w-24 h-16 rounded border border-border/50 relative overflow-hidden bg-muted flex-shrink-0 flex items-center justify-center">
+                  {currentCert.image.includes('.pdf') ? (
+                    <FileText className="w-8 h-8 text-primary" />
+                  ) : (
+                    <Image src={currentCert.image} alt="Preview" fill className="object-cover" />
+                  )}
                 </div>
               )}
               <div className="flex-1 flex gap-2">
-                <Input value={currentCert.image || ''} onChange={e => setCurrentCert({...currentCert, image: e.target.value})} placeholder="Image URL or upload..." />
+                <Input value={currentCert.image || ''} onChange={e => setCurrentCert({...currentCert, image: e.target.value})} placeholder="File URL or upload..." />
                 
                 <input 
                   type="file" 
-                  accept="image/*" 
+                  accept="image/*,application/pdf" 
                   className="hidden" 
                   ref={fileInputRef}
                   onChange={handleImageUpload}
@@ -199,8 +203,12 @@ export default function AdminCertificates() {
           <div key={cert.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-card border border-border/50 rounded-xl gap-4">
             <div className="flex items-center gap-4">
               {cert.image ? (
-                <div className="w-16 h-12 rounded relative overflow-hidden flex-shrink-0 bg-muted">
-                  <Image src={cert.image} alt={cert.title} fill className="object-cover" />
+                <div className="w-16 h-12 rounded relative overflow-hidden flex-shrink-0 bg-muted flex items-center justify-center">
+                  {cert.image.includes('.pdf') ? (
+                    <FileText className="w-6 h-6 text-primary" />
+                  ) : (
+                    <Image src={cert.image} alt={cert.title} fill className="object-cover" />
+                  )}
                 </div>
               ) : (
                 <div className="w-16 h-12 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary">
