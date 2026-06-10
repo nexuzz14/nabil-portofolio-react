@@ -14,6 +14,7 @@ interface Profile {
   role: string
   bio: string
   full_bio: string
+  avatar_url: string
   resume_url: string
   email: string
   phone: string
@@ -27,6 +28,9 @@ export default function AdminProfile() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploadingResume, setUploadingResume] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const resumeInputRef = useRef<HTMLInputElement>(null)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -53,6 +57,7 @@ export default function AdminProfile() {
         role: profile.role,
         bio: profile.bio,
         full_bio: profile.full_bio,
+        avatar_url: profile.avatar_url,
         resume_url: profile.resume_url,
         email: profile.email,
         phone: profile.phone,
@@ -77,27 +82,64 @@ export default function AdminProfile() {
     setUploadingResume(true)
     try {
       const fileExt = file.name.split('.').pop()
-      const fileName = `resume_${Date.now()}.${fileExt}`
-      
-      const { error: uploadError } = await supabase.storage
-        .from('portfolio')
-        .upload(`resumes/${fileName}`, file)
+      const fileName = `resumes/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+      const filePath = `${fileName}`
 
-      if (uploadError) throw uploadError
-
-      const { data } = supabase.storage
+      const { error: uploadError } = await createClient().storage
         .from('portfolio')
-        .getPublicUrl(`resumes/${fileName}`)
+        .upload(filePath, file)
+
+      if (uploadError) {
+        throw uploadError
+      }
+
+      const { data } = createClient().storage
+        .from('portfolio')
+        .getPublicUrl(filePath)
 
       if (data?.publicUrl) {
         setProfile({ ...profile, resume_url: data.publicUrl })
         alert("Resume uploaded! Don't forget to click 'Save Changes'.")
       }
     } catch (error: any) {
-      console.error(error)
+      console.error("Error uploading resume:", error)
       alert("Failed to upload resume: " + error.message)
     } finally {
       setUploadingResume(false)
+    }
+  }
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+
+    setUploadingAvatar(true)
+
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `avatars/${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+      const filePath = `${fileName}`
+
+      const { error: uploadError } = await createClient().storage
+        .from('portfolio')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        throw uploadError
+      }
+
+      const { data } = createClient().storage
+        .from('portfolio')
+        .getPublicUrl(filePath)
+
+      if (data?.publicUrl) {
+        setProfile({ ...profile, avatar_url: data.publicUrl })
+      }
+    } catch (error: any) {
+      console.error("Error uploading avatar:", error)
+      alert("Failed to upload avatar: " + error.message)
+    } finally {
+      setUploadingAvatar(false)
     }
   }
 
@@ -131,6 +173,39 @@ export default function AdminProfile() {
         
         <form onSubmit={handleSave} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2 md:col-span-2">
+              <Label>Avatar Image (Profile Picture)</Label>
+              <div className="flex gap-4 items-end">
+                {profile.avatar_url && (
+                  <div className="w-16 h-16 rounded-full border border-border/50 relative overflow-hidden bg-muted flex-shrink-0 flex items-center justify-center">
+                    <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="flex-1 flex gap-2">
+                  <Input 
+                    value={profile.avatar_url || ''} 
+                    onChange={e => setProfile({...profile, avatar_url: e.target.value})} 
+                    placeholder="https://... or upload image" 
+                  />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    ref={avatarInputRef}
+                    onChange={handleAvatarUpload}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    onClick={() => avatarInputRef.current?.click()}
+                    disabled={uploadingAvatar}
+                  >
+                    {uploadingAvatar ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input 

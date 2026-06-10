@@ -13,6 +13,7 @@ interface Profile {
   linkedin_url: string
   email: string
   instagram_url: string
+  avatar_url: string
 }
 
 export default function Sidebar() {
@@ -88,6 +89,22 @@ export default function Sidebar() {
   return (
     <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-[40%] lg:flex-col lg:justify-between lg:py-24 py-12 text-foreground z-20">
       <div>
+        {profile.avatar_url && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="mb-8 relative group w-32 h-32 lg:w-40 lg:h-40"
+          >
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/80 to-blue-500/80 blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
+            <img 
+              src={profile.avatar_url} 
+              alt={profile.name} 
+              className="rounded-full object-cover w-full h-full relative z-10 border-2 border-border/50 group-hover:border-primary/50 transition-colors shadow-xl"
+            />
+          </motion.div>
+        )}
+
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
