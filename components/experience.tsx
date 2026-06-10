@@ -51,7 +51,7 @@ export default function Experience() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } }
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
   }
 
   return (
@@ -118,3 +118,4 @@ export default function Experience() {
     </section>
   )
 }
+

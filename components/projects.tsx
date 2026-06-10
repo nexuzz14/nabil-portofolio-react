@@ -125,7 +125,7 @@ export default function Projects({ limit }: { limit?: number }) {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } }
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
   }
 
   const parseImages = (imageField: string | string[]) => {
@@ -207,3 +207,4 @@ export default function Projects({ limit }: { limit?: number }) {
     </section>
   )
 }
+

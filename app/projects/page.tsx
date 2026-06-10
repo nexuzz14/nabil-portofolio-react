@@ -22,10 +22,11 @@ export default function ProjectsPage() {
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300 flex flex-col">
         <Header />
         <main className="flex-grow pt-24">
-          <Projects showViewAllLink={false} columns={3} />
+          <Projects />
         </main>
         <Footer />
       </div>
     </ThemeProvider>
   )
 }
+
