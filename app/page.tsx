@@ -12,6 +12,7 @@ import Education from "@/components/education"
 import Contact from "@/components/contact"
 import Footer from "@/components/footer"
 import LoadingScreen from "@/components/loading-screen"
+import BackToTop from "@/components/back-to-top"
 
 export default function Portfolio() {
   const [mounted, setMounted] = useState(false)
@@ -58,6 +59,7 @@ export default function Portfolio() {
 
             </div>
           </div>
+          <BackToTop />
         </div>
       )}
     </ThemeProvider>

@@ -70,10 +70,32 @@ export default function Experience() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="space-y-8"
+          className="relative space-y-8"
         >
+          {/* Timeline vertical line - desktop only */}
+          <div className="absolute left-0 top-2 bottom-2 hidden lg:block w-0.5 bg-primary/20" />
+
           {experience.map((item) => (
-            <motion.div key={item.id} variants={itemVariants} className="group relative">
+            <motion.div key={item.id} variants={itemVariants} className="group relative lg:pl-10">
+              {/* Timeline dot - desktop only */}
+              <div className="absolute left-0 top-3 hidden lg:flex items-center justify-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  <div className="w-2 h-2 rounded-full bg-primary relative z-10" />
+                  <motion.div
+                    className="absolute -inset-1.5 rounded-full border-2 border-primary/40"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    whileInView={{ scale: [0.8, 1.3, 1], opacity: [0, 0.6, 0.3] }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                </motion.div>
+              </div>
+
               <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
               
               <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
@@ -118,4 +140,3 @@ export default function Experience() {
     </section>
   )
 }
-

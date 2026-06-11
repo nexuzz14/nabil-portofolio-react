@@ -1,16 +1,42 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "@/lib/supabase"
-import { motion } from "framer-motion"
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion"
+import { Folder, Briefcase, Cpu } from "lucide-react"
 
 interface Profile {
   full_bio: string
   resume_url: string
 }
 
+function AnimatedCounter({ value, inView }: { value: number; inView: boolean }) {
+  const count = useMotionValue(0)
+  const rounded = useTransform(count, (latest) => Math.round(latest))
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    if (inView && value > 0) {
+      const controls = animate(count, value, {
+        duration: 2,
+        ease: "easeOut",
+      })
+      const unsubscribe = rounded.on("change", (v) => setDisplayValue(v))
+      return () => {
+        controls.stop()
+        unsubscribe()
+      }
+    }
+  }, [inView, value, count, rounded])
+
+  return <span>{displayValue}</span>
+}
+
 export default function About() {
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [stats, setStats] = useState({ projects: 0, experiences: 0, skills: 0 })
+  const statsRef = useRef(null)
+  const isInView = useInView(statsRef, { once: true, margin: "-50px" })
 
   useEffect(() => {
     async function fetchProfile() {
@@ -18,6 +44,22 @@ export default function About() {
       if (data) setProfile(data)
     }
     fetchProfile()
+  }, [])
+
+  useEffect(() => {
+    async function fetchStats() {
+      const [projectsRes, experiencesRes, skillsRes] = await Promise.all([
+        supabase.from('projects').select('id', { count: 'exact', head: true }),
+        supabase.from('experiences').select('id', { count: 'exact', head: true }),
+        supabase.from('skills').select('id', { count: 'exact', head: true }),
+      ])
+      setStats({
+        projects: projectsRes.count ?? 0,
+        experiences: experiencesRes.count ?? 0,
+        skills: skillsRes.count ?? 0,
+      })
+    }
+    fetchStats()
   }, [])
 
   if (!profile) {
@@ -32,6 +74,12 @@ export default function About() {
       </section>
     )
   }
+
+  const statItems = [
+    { label: "Projects Completed", value: stats.projects, icon: Folder },
+    { label: "Work Experiences", value: stats.experiences, icon: Briefcase },
+    { label: "Tech Skills", value: stats.skills, icon: Cpu },
+  ]
 
   return (
     <section id="about" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
@@ -61,6 +109,32 @@ export default function About() {
             </a>
           </div>
         )}
+
+        {/* Stat Counters */}
+        <motion.div
+          ref={statsRef}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4"
+        >
+          {statItems.map((stat) => (
+            <div
+              key={stat.label}
+              className="group relative rounded-xl bg-primary/5 backdrop-blur-sm border border-primary/10 p-5 text-center transition-all duration-300 hover:border-primary/25 hover:bg-primary/10"
+            >
+              <stat.icon className="w-5 h-5 text-primary/50 mx-auto mb-2 transition-colors group-hover:text-primary/80" />
+              <div className="text-3xl font-bold text-foreground tabular-nums">
+                <AnimatedCounter value={stat.value} inView={isInView} />
+                <span className="text-primary">+</span>
+              </div>
+              <div className="text-xs font-medium text-muted-foreground mt-1 uppercase tracking-wider">
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   )

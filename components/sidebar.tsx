@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Github, Linkedin, Mail, Instagram } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import Image from "next/image"
 
 interface Profile {
   name: string
@@ -97,9 +98,12 @@ export default function Sidebar() {
             className="mb-8 relative group w-32 h-32 lg:w-40 lg:h-40"
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/80 to-blue-500/80 blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
-            <img 
+            <Image 
               src={profile.avatar_url} 
-              alt={profile.name} 
+              alt={profile.name}
+              width={160}
+              height={160}
+              priority
               className="rounded-full object-cover w-full h-full relative z-10 border-2 border-border/50 group-hover:border-primary/50 transition-colors shadow-xl"
             />
           </motion.div>
@@ -114,14 +118,14 @@ export default function Sidebar() {
           {profile.name}
         </motion.h1>
         
-        <motion.h2 
+        <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
           className="text-xl sm:text-2xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 mb-6"
         >
           {profile.role}
-        </motion.h2>
+        </motion.p>
         
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
