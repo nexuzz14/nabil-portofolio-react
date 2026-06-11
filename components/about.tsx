@@ -49,14 +49,14 @@ export default function About() {
   useEffect(() => {
     async function fetchStats() {
       const [projectsRes, experiencesRes, skillsRes] = await Promise.all([
-        supabase.from('projects').select('id', { count: 'exact', head: true }),
-        supabase.from('experiences').select('id', { count: 'exact', head: true }),
-        supabase.from('skills').select('id', { count: 'exact', head: true }),
+        supabase.from('projects').select('id'),
+        supabase.from('experiences').select('id'),
+        supabase.from('skills').select('id'),
       ])
       setStats({
-        projects: projectsRes.count ?? 0,
-        experiences: experiencesRes.count ?? 0,
-        skills: skillsRes.count ?? 0,
+        projects: projectsRes.data?.length ?? 0,
+        experiences: experiencesRes.data?.length ?? 0,
+        skills: skillsRes.data?.length ?? 0,
       })
     }
     fetchStats()
