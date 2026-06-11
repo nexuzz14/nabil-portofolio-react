@@ -1,6 +1,15 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Heart, Github, Linkedin, Mail, Instagram } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+
+interface Profile {
+  email: string
+  github_url: string
+  linkedin_url: string
+  instagram_url: string
+}
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -12,14 +21,21 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ]
 
-const socialLinks = [
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Mail, href: "#", label: "Email" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-]
-
 export default function Footer() {
+  const [profile, setProfile] = useState<Profile | null>(null)
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data } = await supabase
+        .from('profile')
+        .select('email, github_url, linkedin_url, instagram_url')
+        .limit(1)
+        .single()
+      if (data) setProfile(data)
+    }
+    fetchProfile()
+  }, [])
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     const target = document.querySelector(href)
@@ -27,6 +43,12 @@ export default function Footer() {
       target.scrollIntoView({ behavior: "smooth" })
     }
   }
+
+  const socialLinks = []
+  if (profile?.github_url) socialLinks.push({ icon: Github, href: profile.github_url, label: "GitHub" })
+  if (profile?.linkedin_url) socialLinks.push({ icon: Linkedin, href: profile.linkedin_url, label: "LinkedIn" })
+  if (profile?.email) socialLinks.push({ icon: Mail, href: `mailto:${profile.email}`, label: "Email" })
+  if (profile?.instagram_url) socialLinks.push({ icon: Instagram, href: profile.instagram_url, label: "Instagram" })
 
   return (
     <footer className="border-t border-border/30 pt-12 pb-16 text-sm text-muted-foreground sm:pb-8">
@@ -47,21 +69,25 @@ export default function Footer() {
         </ul>
       </nav>
 
-      {/* Social Icons */}
-      <div className="flex justify-center gap-5 mb-8">
-        {socialLinks.map((social) => (
-          <a
-            key={social.label}
-            href={social.href}
-            aria-label={social.label}
-            className="text-muted-foreground hover:text-primary transition-colors"
-          >
-            <social.icon className="h-5 w-5" />
-          </a>
-        ))}
-      </div>
+      {/* Social Icons — Dynamic from Supabase */}
+      {socialLinks.length > 0 && (
+        <div className="flex justify-center gap-5 mb-8">
+          {socialLinks.map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.label}
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <social.icon className="h-5 w-5" />
+            </a>
+          ))}
+        </div>
+      )}
 
-      {/* Existing copyright / heart text */}
+      {/* Copyright */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <p>
           Coded in Visual Studio Code. Built with Next.js and Tailwind CSS, deployed with Vercel.
