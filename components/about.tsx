@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "@/lib/supabase"
-import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion"
+import { motion, useInView } from "framer-motion"
 import { Folder, Briefcase, Cpu } from "lucide-react"
 
 interface Profile {
@@ -10,33 +10,37 @@ interface Profile {
   resume_url: string
 }
 
-function AnimatedCounter({ value, inView }: { value: number; inView: boolean }) {
-  const count = useMotionValue(0)
-  const rounded = useTransform(count, (latest) => Math.round(latest))
+function AnimatedCounter({ value }: { value: number }) {
   const [displayValue, setDisplayValue] = useState(0)
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: "-50px" })
+  const hasAnimated = useRef(false)
 
   useEffect(() => {
-    if (inView && value > 0) {
-      const controls = animate(count, value, {
-        duration: 2,
-        ease: "easeOut",
-      })
-      const unsubscribe = rounded.on("change", (v) => setDisplayValue(v))
-      return () => {
-        controls.stop()
-        unsubscribe()
-      }
-    }
-  }, [inView, value, count, rounded])
+    if (value > 0 && isInView && !hasAnimated.current) {
+      hasAnimated.current = true
+      const count = { val: 0 }
+      const duration = 2000
+      const start = performance.now()
 
-  return <span>{displayValue}</span>
+      function step(now: number) {
+        const elapsed = now - start
+        const progress = Math.min(elapsed / duration, 1)
+        const eased = 1 - Math.pow(1 - progress, 3) // easeOutCubic
+        count.val = Math.round(eased * value)
+        setDisplayValue(count.val)
+        if (progress < 1) requestAnimationFrame(step)
+      }
+      requestAnimationFrame(step)
+    }
+  }, [value, isInView])
+
+  return <span ref={ref}>{displayValue}</span>
 }
 
 export default function About() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [stats, setStats] = useState({ projects: 0, experiences: 0, skills: 0 })
-  const statsRef = useRef(null)
-  const isInView = useInView(statsRef, { once: true, margin: "-50px" })
 
   useEffect(() => {
     async function fetchProfile() {
@@ -134,7 +138,7 @@ export default function About() {
             >
               <stat.icon className="w-5 h-5 text-primary/50 mx-auto mb-2 transition-colors group-hover:text-primary/80" />
               <div className="text-3xl font-bold text-foreground tabular-nums">
-                <AnimatedCounter value={stat.value} inView={isInView} />
+                <AnimatedCounter value={stat.value} />
                 <span className="text-primary">+</span>
               </div>
               <div className="text-xs font-medium text-muted-foreground mt-1 uppercase tracking-wider">
