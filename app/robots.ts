@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: 'https://nabilcf.my.id/sitemap.xml',
+    sitemap: 'https://www.nabilcf.my.id/sitemap.xml',
   }
 }

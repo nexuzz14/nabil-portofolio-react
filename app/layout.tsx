@@ -5,7 +5,7 @@ import './globals.css'
 
 import FloatingWhatsApp from '@/components/floating-whatsapp'
 
-const siteUrl = 'https://nabilcf.my.id'
+const siteUrl = 'https://www.nabilcf.my.id'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
