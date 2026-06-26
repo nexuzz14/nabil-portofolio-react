@@ -6,6 +6,13 @@ import { motion } from "framer-motion"
 import { ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import useEmblaCarousel from "embla-carousel-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 
 interface Project {
   id: string
@@ -18,7 +25,7 @@ interface Project {
   badge: string
 }
 
-function ProjectImageCarousel({ images, title }: { images: string[], title: string }) {
+function ProjectImageCarousel({ images, title, className = "aspect-video sm:aspect-auto sm:h-20 sm:w-32" }: { images: string[], title: string, className?: string }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -38,7 +45,7 @@ function ProjectImageCarousel({ images, title }: { images: string[], title: stri
 
   if (images.length === 1) {
     return (
-      <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted">
+      <div className={`relative overflow-hidden rounded border border-border/50 bg-muted ${className}`}>
         <Image
           src={images[0] || "/placeholder.svg"}
           alt={title}
@@ -50,7 +57,7 @@ function ProjectImageCarousel({ images, title }: { images: string[], title: stri
   }
 
   return (
-    <div className="relative overflow-hidden rounded border border-border/50 aspect-video sm:aspect-auto sm:h-20 sm:w-32 bg-muted group/carousel">
+    <div className={`relative overflow-hidden rounded border border-border/50 bg-muted group/carousel ${className}`}>
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex h-full">
           {images.map((img, i) => (
@@ -93,6 +100,7 @@ function ProjectImageCarousel({ images, title }: { images: string[], title: stri
 export default function Projects({ limit }: { limit?: number }) {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   useEffect(() => {
     async function fetchProjects() {
@@ -159,7 +167,12 @@ export default function Projects({ limit }: { limit?: number }) {
           className="group/list space-y-12"
         >
           {projects.map((project) => (
-            <motion.div key={project.id} variants={itemVariants} className="group relative">
+            <motion.div 
+              key={project.id} 
+              variants={itemVariants} 
+              className="group relative cursor-pointer"
+              onClick={() => setSelectedProject(project)}
+            >
               <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-primary/5 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
               
               <div className="relative z-10 sm:grid sm:grid-cols-8 sm:gap-8 md:gap-4">
@@ -169,41 +182,91 @@ export default function Projects({ limit }: { limit?: number }) {
                 
                 <div className="z-10 sm:col-span-6">
                   <h3 className="font-medium leading-snug text-foreground flex items-center gap-2">
-                    <a href={project.demo !== "#" ? project.demo : project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-baseline font-semibold leading-tight text-foreground hover:text-primary focus-visible:text-primary group/link text-base">
+                    <span className="inline-flex items-baseline font-semibold leading-tight text-foreground group-hover:text-primary transition-colors text-base">
                       <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
                       <span>{project.title}</span>
-                      <ExternalLink className="ml-1 inline-block h-3 w-3 shrink-0 translate-y-px transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />
-                    </a>
+                    </span>
                   </h3>
                   
-                  <p className="mt-2 text-sm leading-normal text-muted-foreground">
+                  <p className="mt-2 text-sm leading-normal text-muted-foreground line-clamp-2">
                     {project.description}
                   </p>
 
                   <ul className="mt-4 flex flex-wrap" aria-label="Technologies used">
-                    {project.technologies?.map((tech) => (
+                    {project.technologies?.slice(0, 4).map((tech) => (
                       <li key={tech} className="mr-1.5 mt-2">
                         <div className="flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium leading-5 text-primary">
                           {tech}
                         </div>
                       </li>
                     ))}
-                  </ul>
-
-                  <div className="mt-4 flex gap-4 relative z-20">
-                    {project.github !== "#" && (
-                      <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 text-xs font-medium">
-                        <Github className="h-4 w-4" />
-                        Source
-                      </a>
+                    {project.technologies?.length > 4 && (
+                      <li className="mr-1.5 mt-2">
+                        <div className="flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium leading-5 text-primary">
+                          +{project.technologies.length - 4}
+                        </div>
+                      </li>
                     )}
-                  </div>
+                  </ul>
                 </div>
               </div>
             </motion.div>
           ))}
         </motion.div>
       )}
+
+      <Dialog open={!!selectedProject} onOpenChange={(open) => !open && setSelectedProject(null)}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selectedProject && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold">{selectedProject.title}</DialogTitle>
+                <DialogDescription className="sr-only">
+                  Details about {selectedProject.title}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="mt-4">
+                <ProjectImageCarousel 
+                  images={parseImages(selectedProject.image)} 
+                  title={selectedProject.title}
+                  className="w-full aspect-video mb-6"
+                />
+                 
+                 <div className="space-y-4">
+                   <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                     {selectedProject.description}
+                   </p>
+                   
+                   <div>
+                     <h4 className="font-semibold mb-2">Technologies</h4>
+                     <ul className="flex flex-wrap gap-2">
+                        {selectedProject.technologies?.map((tech) => (
+                          <li key={tech} className="flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium leading-5 text-primary">
+                            {tech}
+                          </li>
+                        ))}
+                     </ul>
+                   </div>
+                   
+                   <div className="flex gap-4 pt-4 mt-6 border-t border-border/50">
+                     {selectedProject.demo && selectedProject.demo !== "#" && (
+                       <a href={selectedProject.demo} target="_blank" rel="noopener noreferrer" className="bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors text-sm">
+                         <ExternalLink className="w-4 h-4" /> Live Demo
+                       </a>
+                     )}
+                     {selectedProject.github && selectedProject.github !== "#" && (
+                       <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="bg-secondary text-secondary-foreground border border-border/50 px-4 py-2 rounded-md font-medium flex items-center gap-2 hover:bg-secondary/80 transition-colors text-sm">
+                         <Github className="w-4 h-4" /> Source Code
+                       </a>
+                     )}
+                   </div>
+                 </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }
