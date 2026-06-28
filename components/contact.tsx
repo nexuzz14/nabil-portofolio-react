@@ -14,9 +14,9 @@ interface Profile {
 export default function Contact() {
   const [profile, setProfile] = useState<Profile | null>(null)
   
-  // Form State
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [message, setMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
@@ -36,7 +36,7 @@ export default function Contact() {
 
     try {
       const { error } = await supabase.from('messages').insert([
-        { name, email, message }
+        { name, email, phone, message }
       ])
       
       if (error) throw error
@@ -55,6 +55,7 @@ export default function Contact() {
       setSubmitStatus("success")
       setName("")
       setEmail("")
+      setPhone("")
       setMessage("")
       
       // Reset success message after 3 seconds
@@ -114,7 +115,7 @@ export default function Contact() {
           <div>
             <h4 className="text-sm font-semibold mb-4 text-foreground/80 uppercase tracking-wider">Send me a message</h4>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input 
                   type="text" 
                   placeholder="Your Name" 
@@ -130,6 +131,13 @@ export default function Contact() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full bg-background border border-border/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                />
+                <input 
+                  type="tel" 
+                  placeholder="WhatsApp / Phone (Optional)" 
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  className="w-full bg-background border border-border/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all md:col-span-2"
                 />
               </div>
               <textarea 

@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Trash2, Mail, Calendar, User } from "lucide-react"
+import { Trash2, Mail, Calendar, User, Phone, MessageSquare } from "lucide-react"
 
 interface Message {
   id: string
   name: string
   email: string
+  phone?: string
   message: string
   created_at: string
 }
@@ -64,6 +65,12 @@ export default function AdminMessages() {
                     <Mail className="w-4 h-4" />
                     <a href={`mailto:${msg.email}`} className="hover:text-primary transition-colors">{msg.email}</a>
                   </div>
+                  {msg.phone && (
+                    <div className="flex items-center gap-1.5">
+                      <Phone className="w-4 h-4" />
+                      <a href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">{msg.phone}</a>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4" />
                     {new Date(msg.created_at).toLocaleString()}
@@ -72,6 +79,19 @@ export default function AdminMessages() {
                 
                 <div className="bg-muted/30 p-4 rounded-lg border border-border/30 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
                   {msg.message}
+                </div>
+                
+                <div className="flex gap-3 pt-2">
+                  <a href={`mailto:${msg.email}?subject=Reply from Portfolio`} className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                    <Mail className="w-4 h-4" />
+                    Reply via Email
+                  </a>
+                  {msg.phone && (
+                    <a href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#25D366] text-white hover:bg-[#20bd5a] h-9 px-4 py-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Reply via WA
+                    </a>
+                  )}
                 </div>
               </div>
               
