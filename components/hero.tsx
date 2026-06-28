@@ -119,9 +119,14 @@ export default function Hero() {
                   />
                 </div>
               ) : (
-                <div className="relative w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-muted z-10 flex flex-col items-center justify-center p-8 text-center">
-                  <h2 className="text-3xl font-bold text-foreground mb-2">{profile.name}</h2>
-                  <p className="text-primary font-medium">{profile.role}</p>
+                <div className="relative w-full h-full rounded-full md:rounded-[2rem] overflow-hidden border-2 border-border/50 shadow-2xl bg-muted z-10 flex items-center justify-center">
+                  <Image 
+                    src="/hero-3d.png"
+                    alt="3D Illustration"
+                    fill
+                    priority
+                    className="object-cover"
+                  />
                 </div>
               )}
               
