@@ -111,20 +111,28 @@ export default function AdminExperience() {
     const cleanSkills = skills.filter(s => s.trim() !== "")
     const cleanAchievements = achievements.filter(a => a.trim() !== "")
 
+    const { id, created_at, ...rest } = currentExperience as any
     const payload = {
-      ...currentExperience,
+      ...rest,
       skills: cleanSkills,
       achievements: cleanAchievements
     }
 
-    if (currentExperience.id) {
-      await createClient().from('experiences').update(payload).eq('id', currentExperience.id)
-    } else {
-      await createClient().from('experiences').insert([payload])
+    try {
+      if (currentExperience.id) {
+        const { error } = await createClient().from('experiences').update(payload).eq('id', currentExperience.id)
+        if (error) throw error
+      } else {
+        const { error } = await createClient().from('experiences').insert([payload])
+        if (error) throw error
+      }
+      
+      setIsEditing(false)
+      fetchExperiences()
+    } catch (error: any) {
+      console.error("Error saving experience:", error)
+      alert("Failed to save experience: " + error.message)
     }
-    
-    setIsEditing(false)
-    fetchExperiences()
   }
 
   // Array Handlers

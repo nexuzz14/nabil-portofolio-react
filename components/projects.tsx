@@ -20,8 +20,8 @@ interface Project {
   description: string
   image: string | string[]
   technologies: string[]
-  demo: string
-  github: string
+  live_url: string
+  github_url: string
   badge: string
 }
 
@@ -264,13 +264,13 @@ export default function Projects({ limit }: { limit?: number }) {
                   </div>
                   
                   <div className="flex flex-wrap gap-4 pt-4 border-t border-border/50">
-                    {selectedProject.demo && selectedProject.demo !== "#" && (
-                      <a href={selectedProject.demo} target="_blank" rel="noopener noreferrer" className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full font-medium flex items-center gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-primary/25 text-sm">
+                    {selectedProject.live_url && selectedProject.live_url !== "#" && (
+                      <a href={selectedProject.live_url} target="_blank" rel="noopener noreferrer" className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full font-medium flex items-center gap-2 hover:bg-primary/90 transition-all shadow-sm hover:shadow-primary/25 text-sm">
                         <ExternalLink className="w-4 h-4" /> Visit Website
                       </a>
                     )}
-                    {selectedProject.github && selectedProject.github !== "#" && (
-                      <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="bg-background text-foreground border border-border px-6 py-2.5 rounded-full font-medium flex items-center gap-2 hover:bg-muted transition-colors text-sm">
+                    {selectedProject.github_url && selectedProject.github_url !== "#" && (
+                      <a href={selectedProject.github_url} target="_blank" rel="noopener noreferrer" className="bg-background text-foreground border border-border px-6 py-2.5 rounded-full font-medium flex items-center gap-2 hover:bg-muted transition-colors text-sm">
                         <Github className="w-4 h-4" /> View Source
                       </a>
                     )}

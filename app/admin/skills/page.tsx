@@ -53,14 +53,24 @@ export default function AdminSkills() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (currentSkill.id) {
-      await createClient().from('skills').update(currentSkill).eq('id', currentSkill.id)
-    } else {
-      await createClient().from('skills').insert([currentSkill])
-    }
+    const { id, created_at, ...rest } = currentSkill as any
+    const payload = rest
     
-    setIsEditing(false)
-    fetchSkills()
+    try {
+      if (currentSkill.id) {
+        const { error } = await createClient().from('skills').update(payload).eq('id', currentSkill.id)
+        if (error) throw error
+      } else {
+        const { error } = await createClient().from('skills').insert([payload])
+        if (error) throw error
+      }
+      
+      setIsEditing(false)
+      fetchSkills()
+    } catch (error: any) {
+      console.error("Error saving skill:", error)
+      alert("Failed to save skill: " + error.message)
+    }
   }
 
   if (loading && !isEditing) {

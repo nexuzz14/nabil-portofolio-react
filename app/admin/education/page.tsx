@@ -111,20 +111,28 @@ export default function AdminEducation() {
     const cleanCoursework = coursework.filter(s => s.trim() !== "")
     const cleanAchievements = achievements.filter(a => a.trim() !== "")
 
+    const { id, created_at, ...rest } = currentEducation as any
     const payload = {
-      ...currentEducation,
+      ...rest,
       coursework: cleanCoursework,
       achievements: cleanAchievements
     }
 
-    if (currentEducation.id) {
-      await createClient().from('education').update(payload).eq('id', currentEducation.id)
-    } else {
-      await createClient().from('education').insert([payload])
+    try {
+      if (currentEducation.id) {
+        const { error } = await createClient().from('education').update(payload).eq('id', currentEducation.id)
+        if (error) throw error
+      } else {
+        const { error } = await createClient().from('education').insert([payload])
+        if (error) throw error
+      }
+      
+      setIsEditing(false)
+      fetchEducation()
+    } catch (error: any) {
+      console.error("Error saving education:", error)
+      alert("Failed to save education: " + error.message)
     }
-    
-    setIsEditing(false)
-    fetchEducation()
   }
 
   // Array Handlers

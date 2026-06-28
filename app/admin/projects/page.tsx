@@ -15,8 +15,8 @@ interface Project {
   description: string
   image: string | string[]
   technologies: string[]
-  github: string
-  demo: string
+  github_url: string
+  live_url: string
   badge: string
   display_order?: number
 }
@@ -49,8 +49,8 @@ export default function AdminProjects() {
     setCurrentProject({
       title: "",
       description: "",
-      github: "",
-      demo: "",
+      github_url: "",
+      live_url: "",
       badge: ""
     })
     setTechnologies([""])
@@ -127,21 +127,29 @@ export default function AdminProjects() {
     const cleanTech = technologies.filter(t => t.trim() !== "")
     const cleanImages = images.filter(i => i.trim() !== "")
 
+    const { id, created_at, ...rest } = currentProject as any
     const payload = {
-      ...currentProject,
+      ...rest,
       technologies: cleanTech,
       // Store images as JSON string if database column is text
       image: JSON.stringify(cleanImages)
     }
 
-    if (currentProject.id) {
-      await createClient().from('projects').update(payload).eq('id', currentProject.id)
-    } else {
-      await createClient().from('projects').insert([payload])
+    try {
+      if (currentProject.id) {
+        const { error } = await createClient().from('projects').update(payload).eq('id', currentProject.id)
+        if (error) throw error
+      } else {
+        const { error } = await createClient().from('projects').insert([payload])
+        if (error) throw error
+      }
+      
+      setIsEditing(false)
+      fetchProjects()
+    } catch (error: any) {
+      console.error("Error saving project:", error)
+      alert("Failed to save project: " + error.message)
     }
-    
-    setIsEditing(false)
-    fetchProjects()
   }
 
   // Array Handlers
@@ -315,11 +323,11 @@ export default function AdminProjects() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>GitHub URL (use # if none)</Label>
-              <Input value={currentProject.github || ''} onChange={e => setCurrentProject({...currentProject, github: e.target.value})} required />
+              <Input value={currentProject.github_url || ''} onChange={e => setCurrentProject({...currentProject, github_url: e.target.value})} required />
             </div>
             <div className="space-y-2">
-              <Label>Demo URL (use # if none)</Label>
-              <Input value={currentProject.demo || ''} onChange={e => setCurrentProject({...currentProject, demo: e.target.value})} required />
+              <Label>Live URL (use # if none)</Label>
+              <Input value={currentProject.live_url || ''} onChange={e => setCurrentProject({...currentProject, live_url: e.target.value})} required />
             </div>
           </div>
 
