@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
-import Sidebar from "@/components/sidebar"
+import Navbar from "@/components/navbar"
+import Hero from "@/components/hero"
 import About from "@/components/about"
 import Experience from "@/components/experience"
 import Skills from "@/components/skills"
@@ -27,7 +28,7 @@ export default function Portfolio() {
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
       
       {!isLoading && (
@@ -41,23 +42,23 @@ export default function Portfolio() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
           </div>
 
-          <div className="mx-auto min-h-screen max-w-screen-xl px-6 py-12 font-sans md:px-12 md:py-20 lg:px-24 lg:py-0">
-            <div className="lg:flex lg:justify-between lg:gap-4 relative z-10">
-              
-              <Sidebar />
+          <Navbar />
 
-              <main className="pt-24 lg:w-[55%] lg:py-24">
-                <About />
-                <Experience />
-                <Skills />
-                <Projects />
-                <Certificates />
-                <Education />
-                <Contact />
-                <Footer />
-              </main>
-
+          <main className="relative z-10 pt-24 pb-12">
+            <Hero />
+            <div className="max-w-screen-xl mx-auto px-6 md:px-12 lg:px-24 space-y-24 md:space-y-32 mt-24">
+              <About />
+              <Projects />
+              <Experience />
+              <Skills />
+              <Certificates />
+              <Education />
+              <Contact />
             </div>
+          </main>
+          
+          <div className="max-w-screen-xl mx-auto px-6 md:px-12 lg:px-24 relative z-10">
+            <Footer />
           </div>
           <BackToTop />
         </div>
