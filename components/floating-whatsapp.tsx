@@ -1,9 +1,23 @@
 "use client"
 
 import { FaWhatsapp } from "react-icons/fa"
+import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase"
 
 export default function FloatingWhatsApp() {
-  const phoneNumber = "6285803067018"
+  const [phoneNumber, setPhoneNumber] = useState("6285803067018")
+  
+  useEffect(() => {
+    async function fetchPhone() {
+      const { data } = await supabase.from('profile').select('phone').single()
+      if (data?.phone) {
+        const cleanPhone = data.phone.replace(/[^0-9]/g, '')
+        if (cleanPhone) setPhoneNumber(cleanPhone)
+      }
+    }
+    fetchPhone()
+  }, [])
+
   const defaultMessage = "Halo, saya melihat portofolio Anda dan tertarik untuk berdiskusi lebih lanjut mengenai project/jasa pembuatan website."
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`
 
