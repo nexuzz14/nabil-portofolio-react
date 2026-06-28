@@ -13,11 +13,13 @@ interface Education {
   status: string
   coursework: string[]
   achievements: string[]
+  is_featured?: boolean
 }
 
 export default function Education() {
   const [education, setEducation] = useState<Education[]>([])
   const [loading, setLoading] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     async function fetchEducation() {
@@ -51,6 +53,13 @@ export default function Education() {
     visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
   }
 
+  const hasFeatured = education.some(item => item.is_featured === true)
+  const collapsedEducation = hasFeatured 
+    ? education.filter(item => item.is_featured === true)
+    : education.slice(0, 2)
+  const displayedEducation = isExpanded ? education : collapsedEducation
+  const showToggleBtn = education.length > collapsedEducation.length
+
   return (
     <section id="education" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
       <div className="mb-12">
@@ -73,7 +82,7 @@ export default function Education() {
           {/* Timeline vertical line - desktop only */}
           <div className="absolute left-0 top-2 bottom-2 hidden lg:block w-0.5 bg-primary/20" />
 
-          {education.map((item) => (
+          {displayedEducation.map((item) => (
             <motion.div key={item.id} variants={itemVariants} className="group relative lg:pl-10">
               {/* Timeline dot - desktop only */}
               <div className="absolute left-0 top-3 hidden lg:flex items-center justify-center">
@@ -140,6 +149,17 @@ export default function Education() {
             </motion.div>
           ))}
         </motion.div>
+      )}
+
+      {!loading && showToggleBtn && (
+        <div className="mt-12 flex justify-center">
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors"
+          >
+            {isExpanded ? "Show Less" : "Show More Education"}
+          </button>
+        </div>
       )}
     </section>
   )

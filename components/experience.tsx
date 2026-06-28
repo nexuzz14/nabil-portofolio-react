@@ -16,11 +16,13 @@ interface Experience {
   status: string
   skills: string[]
   achievements: string[]
+  is_featured?: boolean
 }
 
 export default function Experience() {
   const [experience, setExperience] = useState<Experience[]>([])
   const [loading, setLoading] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     async function fetchExperience() {
@@ -54,6 +56,13 @@ export default function Experience() {
     visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
   }
 
+  const hasFeatured = experience.some(item => item.is_featured === true)
+  const collapsedExperience = hasFeatured 
+    ? experience.filter(item => item.is_featured === true)
+    : experience.slice(0, 2)
+  const displayedExperience = isExpanded ? experience : collapsedExperience
+  const showToggleBtn = experience.length > collapsedExperience.length
+
   return (
     <section id="experience" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
       <div className="mb-12">
@@ -76,7 +85,7 @@ export default function Experience() {
           {/* Timeline vertical line - desktop only */}
           <div className="absolute left-0 top-2 bottom-2 hidden lg:block w-0.5 bg-primary/20" />
 
-          {experience.map((item) => (
+          {displayedExperience.map((item) => (
             <motion.div key={item.id} variants={itemVariants} className="group relative lg:pl-10">
               {/* Timeline dot - desktop only */}
               <div className="absolute left-0 top-3 hidden lg:flex items-center justify-center">
@@ -137,6 +146,17 @@ export default function Experience() {
             </motion.div>
           ))}
         </motion.div>
+      )}
+
+      {!loading && showToggleBtn && (
+        <div className="mt-12 flex justify-center">
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors"
+          >
+            {isExpanded ? "Show Less" : "Show More Experience"}
+          </button>
+        </div>
       )}
     </section>
   )
