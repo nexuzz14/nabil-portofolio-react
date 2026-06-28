@@ -72,16 +72,27 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.1]"
             >
-              Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Digital Solutions</span> That Grow Your Business
+              {profile.role ? (
+                // Simple parser to make words wrapped in * * have gradient
+                profile.role.split('*').map((text: string, i: number) => 
+                  i % 2 === 1 ? (
+                    <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">{text}</span>
+                  ) : (
+                    <span key={i}>{text}</span>
+                  )
+                )
+              ) : (
+                <>Building <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Digital Solutions</span> That Grow Your Business</>
+              )}
             </motion.h1>
 
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+              className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed whitespace-pre-wrap"
             >
-              I help businesses and individuals create fast, secure, and modern websites. From landing pages to complex web applications.
+              {profile.bio || "I help businesses and individuals create fast, secure, and modern websites. From landing pages to complex web applications."}
             </motion.p>
 
             <motion.div 

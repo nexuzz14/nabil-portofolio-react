@@ -217,18 +217,19 @@ export default function AdminProfile() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="role">Role / Headline</Label>
+              <Label htmlFor="role">Hero Headline</Label>
               <Input 
                 id="role" 
                 value={profile.role} 
                 onChange={e => setProfile({...profile, role: e.target.value})} 
                 required
               />
+              <p className="text-xs text-muted-foreground">Tips: Gunakan tanda bintang (*) untuk memberikan warna gradient pada kata. Contoh: Building *Digital Solutions* That Grow Your Business</p>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Short Tagline (Sidebar)</Label>
+            <Label htmlFor="bio">Short Tagline (Hero Subheadline & Sidebar)</Label>
             <Textarea 
               id="bio" 
               value={profile.bio} 
