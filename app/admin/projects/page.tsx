@@ -202,6 +202,54 @@ export default function AdminProjects() {
     }
   }
 
+  const handleBulkImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const newUploadingState = { ...uploadingImage }
+    // We will use a special index '-1' to show bulk upload loading state
+    setUploadingImage(prev => ({ ...prev, [-1]: true }))
+
+    const newUrls: string[] = []
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`
+        const filePath = `projects/${fileName}`
+
+        const { error: uploadError } = await createClient().storage
+          .from('portfolio')
+          .upload(filePath, file)
+
+        if (uploadError) throw uploadError
+
+        const { data } = createClient().storage
+          .from('portfolio')
+          .getPublicUrl(filePath)
+
+        if (data?.publicUrl) {
+          newUrls.push(data.publicUrl)
+        }
+      }
+
+      // Add new URLs to the images array (replacing empty slots if any, or appending)
+      setImages(prev => {
+        const cleaned = prev.filter(img => img.trim() !== "")
+        return [...cleaned, ...newUrls]
+      })
+      alert(`Successfully uploaded ${newUrls.length} images!`)
+    } catch (error: any) {
+      console.error("Error bulk uploading images:", error)
+      alert("Failed to upload some images: " + error.message)
+    } finally {
+      setUploadingImage(prev => ({ ...prev, [-1]: false }))
+      // Reset input
+      if (e.target) e.target.value = ''
+    }
+  }
+
   if (loading && !isEditing) {
     return <div className="flex justify-center p-12"><div className="animate-spin w-8 h-8 border-t-2 border-primary rounded-full"></div></div>
   }
@@ -235,11 +283,31 @@ export default function AdminProjects() {
 
           {/* Dynamic Images with Upload */}
           <div className="space-y-3 bg-muted/20 p-4 rounded-lg border border-border/50">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <Label>Images</Label>
-              <Button type="button" variant="outline" size="sm" onClick={() => handleArrayAdd(setImages, images)}>
-                <Plus className="w-4 h-4 mr-1" /> Add Image Slot
-              </Button>
+              <div className="flex gap-2">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple
+                  className="hidden" 
+                  id="bulk-image-upload"
+                  onChange={handleBulkImageUpload}
+                />
+                <Button 
+                  type="button" 
+                  variant="default" 
+                  size="sm" 
+                  onClick={() => document.getElementById('bulk-image-upload')?.click()}
+                  disabled={uploadingImage[-1]}
+                >
+                  {uploadingImage[-1] ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Upload className="w-4 h-4 mr-1" />}
+                  Bulk Upload
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => handleArrayAdd(setImages, images)}>
+                  <Plus className="w-4 h-4 mr-1" /> Add Slot
+                </Button>
+              </div>
             </div>
             {images.map((img, index) => (
               <div key={index} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center p-3 bg-background/50 rounded-md border border-border/50">
