@@ -56,8 +56,9 @@ export default function Experience() {
     visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
   }
 
-  const featuredExperience = experience.filter(item => item.is_featured === true)
-  const displayedExperience = featuredExperience.length > 0 ? featuredExperience : experience.slice(0, 3)
+  const collapsedExperience = experience.slice(0, 2)
+  const displayedExperience = isExpanded ? experience : collapsedExperience
+  const showToggleBtn = experience.length > collapsedExperience.length
 
   return (
     <section id="experience" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
@@ -144,6 +145,16 @@ export default function Experience() {
         </motion.div>
       )}
 
+      {!loading && showToggleBtn && (
+        <div className="mt-12 flex justify-center">
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors"
+          >
+            {isExpanded ? "Show Less" : "Show More Experience"}
+          </button>
+        </div>
+      )}
     </section>
   )
 }

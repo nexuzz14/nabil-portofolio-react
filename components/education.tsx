@@ -53,9 +53,9 @@ export default function Education() {
     visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80 } }
   }
 
-  const featuredEducation = education.filter(item => item.is_featured === true)
-  // Fallback: If nothing is featured, show the top 3 to avoid an empty section.
-  const displayedEducation = featuredEducation.length > 0 ? featuredEducation : education.slice(0, 3)
+  const collapsedEducation = education.slice(0, 2)
+  const displayedEducation = isExpanded ? education : collapsedEducation
+  const showToggleBtn = education.length > collapsedEducation.length
 
   return (
     <section id="education" className="mb-24 scroll-mt-24 md:mb-36 lg:mb-36 lg:scroll-mt-24">
@@ -148,6 +148,16 @@ export default function Education() {
         </motion.div>
       )}
 
+      {!loading && showToggleBtn && (
+        <div className="mt-12 flex justify-center">
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors"
+          >
+            {isExpanded ? "Show Less" : "Show More Education"}
+          </button>
+        </div>
+      )}
     </section>
   )
 }
