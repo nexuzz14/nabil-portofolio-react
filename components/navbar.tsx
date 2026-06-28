@@ -15,9 +15,12 @@ export default function Navbar() {
   })
 
   const navItems = [
-    { id: "services", label: "Services" },
-    { id: "projects", label: "Work" },
     { id: "about", label: "About" },
+    { id: "projects", label: "Projects" },
+    { id: "experience", label: "Experience" },
+    { id: "skills", label: "Skills" },
+    { id: "certificates", label: "Certificates" },
+    { id: "education", label: "Education" },
   ]
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
