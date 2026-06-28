@@ -136,7 +136,7 @@ export default function Contact() {
                   type="tel" 
                   placeholder="WhatsApp / Phone (Optional)" 
                   value={phone}
-                  onChange={e => setPhone(e.target.value)}
+                  onChange={e => setPhone(e.target.value.replace(/[^0-9+\-\s()]/g, ''))}
                   className="w-full bg-background border border-border/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all md:col-span-2"
                 />
               </div>
