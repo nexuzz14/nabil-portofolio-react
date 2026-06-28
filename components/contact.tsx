@@ -129,7 +129,7 @@ export default function Contact() {
                   placeholder="Your Email" 
                   required
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value.replace(/\s/g, ''))}
                   className="w-full bg-background border border-border/50 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 />
                 <input 
