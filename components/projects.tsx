@@ -160,9 +160,16 @@ export default function Projects({ limit }: { limit?: number }) {
 
   return (
     <section id="projects" className="scroll-mt-28">
-      <div className="mb-12">
-        <h2 className="text-3xl font-bold text-foreground mb-4">Featured Work</h2>
-        <div className="w-20 h-1 bg-primary rounded-full"></div>
+      <div className="mb-12 flex items-end justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-foreground mb-4">{limit ? "Featured Work" : "All Projects"}</h2>
+          <div className="w-20 h-1 bg-primary rounded-full"></div>
+        </div>
+        {limit && (
+          <a href="/projects" className="hidden sm:flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+            View All <ExternalLink className="w-4 h-4" />
+          </a>
+        )}
       </div>
 
       {loading ? (
@@ -215,6 +222,14 @@ export default function Projects({ limit }: { limit?: number }) {
             </motion.div>
           ))}
         </motion.div>
+      )}
+
+      {limit && (
+        <div className="mt-12 flex justify-center sm:hidden">
+          <a href="/projects" className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors">
+            View All Projects <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
       )}
 
       <Dialog open={!!selectedProject} onOpenChange={(open) => !open && setSelectedProject(null)}>

@@ -48,7 +48,7 @@ export default function Portfolio() {
             <Hero />
             <div className="max-w-screen-xl mx-auto px-6 md:px-12 lg:px-24 space-y-24 md:space-y-32 mt-24">
               <About />
-              <Projects />
+              <Projects limit={6} />
               <Experience />
               <Skills />
               <Certificates />
