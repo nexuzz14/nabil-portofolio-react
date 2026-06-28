@@ -23,11 +23,11 @@ function AnimatedPlanet({ isLight }: { isLight: boolean }) {
         {/* Core Planet */}
         <Sphere args={[1.2, 64, 64]}>
           <meshStandardMaterial 
-            color={isLight ? "#e2e8f0" : "#1e293b"}
-            emissive={isLight ? "#cbd5e1" : "#0f172a"}
-            emissiveIntensity={isLight ? 0.8 : 0.5}
-            roughness={isLight ? 0.4 : 0.7}
-            metalness={isLight ? 0.1 : 0.2}
+            color={isLight ? "#3b82f6" : "#1e293b"}
+            emissive={isLight ? "#1d4ed8" : "#0f172a"}
+            emissiveIntensity={isLight ? 0.4 : 0.5}
+            roughness={isLight ? 0.2 : 0.7}
+            metalness={isLight ? 0.8 : 0.2}
           />
         </Sphere>
         
@@ -70,9 +70,9 @@ export default function Hero3D() {
   return (
     <div className="relative w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-background/50 backdrop-blur-sm overflow-hidden cursor-grab active:cursor-grabbing flex items-center justify-center">
       <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} camera={{ position: [0, 0, 6.0], fov: 45 }}>
-        <ambientLight intensity={2} />
-        <directionalLight position={[10, 0, 5]} intensity={isLight ? 1.5 : 3} color="#ffffff" />
-        <directionalLight position={[-10, 10, -5]} intensity={isLight ? 1.5 : 3} color="#8b5cf6" />
+        <ambientLight intensity={isLight ? 0.5 : 2} />
+        <directionalLight position={[10, 0, 5]} intensity={isLight ? 2 : 3} color="#ffffff" />
+        <directionalLight position={[-10, 10, -5]} intensity={isLight ? 2 : 3} color="#8b5cf6" />
         <directionalLight position={[10, -10, -5]} intensity={isLight ? 1 : 2} color="#3b82f6" />
         <pointLight position={[5, -5, 5]} intensity={isLight ? 1 : 2} color="#3b82f6" />
         
