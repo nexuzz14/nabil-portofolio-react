@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Pencil, Trash2, X, Save, Upload, Loader2, Image as ImageIcon, FileText } from "lucide-react"
+import { Plus, Pencil, Trash2, X, Save, Upload, Loader2, Image as ImageIcon, FileText, ArrowUp, ArrowDown } from "lucide-react"
 import Image from "next/image"
 
 interface Certificate {
@@ -15,6 +15,7 @@ interface Certificate {
   date: string
   link: string
   image: string
+  display_order?: number
 }
 
 export default function AdminCertificates() {
@@ -34,7 +35,7 @@ export default function AdminCertificates() {
 
   async function fetchCertificates() {
     setLoading(true)
-    const { data, error } = await createClient().from('certificates').select('*').order('created_at', { ascending: false })
+    const { data, error } = await createClient().from('certificates').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false })
     if (data) setCertificates(data)
     setLoading(false)
   }
@@ -60,6 +61,34 @@ export default function AdminCertificates() {
       await createClient().from('certificates').delete().eq('id', id)
       fetchCertificates()
     }
+  }
+
+  const handleMoveUp = async (index: number) => {
+    if (index === 0) return
+    const newOrder = [...certificates]
+    const temp = newOrder[index]
+    newOrder[index] = newOrder[index - 1]
+    newOrder[index - 1] = temp
+    setCertificates(newOrder)
+
+    const updates = newOrder.map((item, i) => 
+      createClient().from('certificates').update({ display_order: i }).eq('id', item.id)
+    )
+    await Promise.all(updates)
+  }
+
+  const handleMoveDown = async (index: number) => {
+    if (index === certificates.length - 1) return
+    const newOrder = [...certificates]
+    const temp = newOrder[index]
+    newOrder[index] = newOrder[index + 1]
+    newOrder[index + 1] = temp
+    setCertificates(newOrder)
+
+    const updates = newOrder.map((item, i) => 
+      createClient().from('certificates').update({ display_order: i }).eq('id', item.id)
+    )
+    await Promise.all(updates)
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -255,9 +284,17 @@ export default function AdminCertificates() {
       </div>
 
       <div className="grid gap-4">
-        {certificates.map(cert => (
+        {certificates.map((cert, index) => (
           <div key={cert.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-card border border-border/50 rounded-xl gap-4">
             <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-1">
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMoveUp(index)} disabled={index === 0}>
+                  <ArrowUp className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMoveDown(index)} disabled={index === certificates.length - 1}>
+                  <ArrowDown className="w-4 h-4" />
+                </Button>
+              </div>
               {cert.image ? (
                 <div className="w-16 h-12 rounded relative overflow-hidden flex-shrink-0 bg-muted flex items-center justify-center">
                   {cert.image.includes('.pdf') ? (

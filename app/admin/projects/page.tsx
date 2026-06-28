@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Plus, Pencil, Trash2, X, Save, Minus, Upload, Loader2, Image as ImageIcon } from "lucide-react"
+import { Plus, Pencil, Trash2, X, Save, Minus, Upload, Loader2, Image as ImageIcon, ArrowUp, ArrowDown } from "lucide-react"
 import Image from "next/image"
 
 interface Project {
@@ -18,6 +18,7 @@ interface Project {
   github: string
   demo: string
   badge: string
+  display_order?: number
 }
 
 export default function AdminProjects() {
@@ -39,7 +40,7 @@ export default function AdminProjects() {
 
   async function fetchProjects() {
     setLoading(true)
-    const { data, error } = await createClient().from('projects').select('*').order('created_at', { ascending: false })
+    const { data, error } = await createClient().from('projects').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false })
     if (data) setProjects(data)
     setLoading(false)
   }
@@ -89,6 +90,34 @@ export default function AdminProjects() {
       await createClient().from('projects').delete().eq('id', id)
       fetchProjects()
     }
+  }
+
+  const handleMoveUp = async (index: number) => {
+    if (index === 0) return
+    const newOrder = [...projects]
+    const temp = newOrder[index]
+    newOrder[index] = newOrder[index - 1]
+    newOrder[index - 1] = temp
+    setProjects(newOrder)
+
+    const updates = newOrder.map((item, i) => 
+      createClient().from('projects').update({ display_order: i }).eq('id', item.id)
+    )
+    await Promise.all(updates)
+  }
+
+  const handleMoveDown = async (index: number) => {
+    if (index === projects.length - 1) return
+    const newOrder = [...projects]
+    const temp = newOrder[index]
+    newOrder[index] = newOrder[index + 1]
+    newOrder[index + 1] = temp
+    setProjects(newOrder)
+
+    const updates = newOrder.map((item, i) => 
+      createClient().from('projects').update({ display_order: i }).eq('id', item.id)
+    )
+    await Promise.all(updates)
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -314,14 +343,24 @@ export default function AdminProjects() {
       </div>
 
       <div className="grid gap-4">
-        {projects.map(project => (
+        {projects.map((project, index) => (
           <div key={project.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-card border border-border/50 rounded-xl gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold">{project.title}</h3>
-                {project.badge && <span className="text-[10px] uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">{project.badge}</span>}
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-1">
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMoveUp(index)} disabled={index === 0}>
+                  <ArrowUp className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMoveDown(index)} disabled={index === projects.length - 1}>
+                  <ArrowDown className="w-4 h-4" />
+                </Button>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-1 mt-1">{project.description}</p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold">{project.title}</h3>
+                  {project.badge && <span className="text-[10px] uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">{project.badge}</span>}
+                </div>
+                <p className="text-sm text-muted-foreground line-clamp-1 mt-1">{project.description}</p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => handleEdit(project)}><Pencil className="w-4 h-4 mr-2" /> Edit</Button>

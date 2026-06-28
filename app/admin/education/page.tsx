@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Pencil, Trash2, X, Save, Minus } from "lucide-react"
+import { Plus, Pencil, Trash2, X, Save, Minus, ArrowUp, ArrowDown } from "lucide-react"
 
 interface Education {
   id: string
@@ -16,6 +16,7 @@ interface Education {
   status: string
   coursework: string[]
   achievements: string[]
+  display_order?: number
 }
 
 export default function AdminEducation() {
@@ -73,6 +74,34 @@ export default function AdminEducation() {
       await createClient().from('education').delete().eq('id', id)
       fetchEducation()
     }
+  }
+
+  const handleMoveUp = async (index: number) => {
+    if (index === 0) return
+    const newOrder = [...education]
+    const temp = newOrder[index]
+    newOrder[index] = newOrder[index - 1]
+    newOrder[index - 1] = temp
+    setEducation(newOrder)
+
+    const updates = newOrder.map((item, i) => 
+      createClient().from('education').update({ display_order: i }).eq('id', item.id)
+    )
+    await Promise.all(updates)
+  }
+
+  const handleMoveDown = async (index: number) => {
+    if (index === education.length - 1) return
+    const newOrder = [...education]
+    const temp = newOrder[index]
+    newOrder[index] = newOrder[index + 1]
+    newOrder[index + 1] = temp
+    setEducation(newOrder)
+
+    const updates = newOrder.map((item, i) => 
+      createClient().from('education').update({ display_order: i }).eq('id', item.id)
+    )
+    await Promise.all(updates)
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -218,15 +247,25 @@ export default function AdminEducation() {
       </div>
 
       <div className="grid gap-4">
-        {education.map(edu => (
+        {education.map((edu, index) => (
           <div key={edu.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-card border border-border/50 rounded-xl gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold">{edu.institution}</h3>
-                {edu.status && <span className="text-xs bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full">{edu.status}</span>}
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-1">
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMoveUp(index)} disabled={index === 0}>
+                  <ArrowUp className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMoveDown(index)} disabled={index === education.length - 1}>
+                  <ArrowDown className="w-4 h-4" />
+                </Button>
               </div>
-              <p className="text-sm font-medium mt-1">{edu.degree}</p>
-              <p className="text-sm text-muted-foreground">{edu.period}</p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold">{edu.institution}</h3>
+                  {edu.status && <span className="text-xs bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full">{edu.status}</span>}
+                </div>
+                <p className="text-sm font-medium mt-1">{edu.degree}</p>
+                <p className="text-sm text-muted-foreground">{edu.period}</p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => handleEdit(edu)}><Pencil className="w-4 h-4 mr-2" /> Edit</Button>
