@@ -4,8 +4,9 @@ import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Float, Sphere, Ring, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
+import { useTheme } from 'next-themes'
 
-function AnimatedPlanet() {
+function AnimatedPlanet({ isLight }: { isLight: boolean }) {
   const ringsRef = useRef<THREE.Group>(null)
 
   useFrame((state, delta) => {
@@ -22,11 +23,11 @@ function AnimatedPlanet() {
         {/* Core Planet */}
         <Sphere args={[1.2, 64, 64]}>
           <meshStandardMaterial 
-            color="#1e293b" 
-            emissive="#0f172a"
-            emissiveIntensity={0.5}
-            roughness={0.7}
-            metalness={0.2}
+            color={isLight ? "#e2e8f0" : "#1e293b"}
+            emissive={isLight ? "#cbd5e1" : "#0f172a"}
+            emissiveIntensity={isLight ? 0.8 : 0.5}
+            roughness={isLight ? 0.4 : 0.7}
+            metalness={isLight ? 0.1 : 0.2}
           />
         </Sphere>
         
@@ -49,6 +50,10 @@ function AnimatedPlanet() {
 
 export default function Hero3D() {
   const [mounted, setMounted] = useState(false)
+  const { theme, systemTheme } = useTheme()
+  
+  const currentTheme = theme === 'system' ? systemTheme : theme
+  const isLight = currentTheme === 'light'
 
   useEffect(() => {
     setMounted(true)
@@ -66,14 +71,14 @@ export default function Hero3D() {
     <div className="relative w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-background/50 backdrop-blur-sm overflow-hidden cursor-grab active:cursor-grabbing flex items-center justify-center">
       <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} camera={{ position: [0, 0, 6.0], fov: 45 }}>
         <ambientLight intensity={2} />
-        <directionalLight position={[10, 0, 5]} intensity={3} color="#ffffff" />
-        <directionalLight position={[-10, 10, -5]} intensity={3} color="#8b5cf6" />
-        <directionalLight position={[10, -10, -5]} intensity={2} color="#3b82f6" />
-        <pointLight position={[5, -5, 5]} intensity={2} color="#3b82f6" />
+        <directionalLight position={[10, 0, 5]} intensity={isLight ? 1.5 : 3} color="#ffffff" />
+        <directionalLight position={[-10, 10, -5]} intensity={isLight ? 1.5 : 3} color="#8b5cf6" />
+        <directionalLight position={[10, -10, -5]} intensity={isLight ? 1 : 2} color="#3b82f6" />
+        <pointLight position={[5, -5, 5]} intensity={isLight ? 1 : 2} color="#3b82f6" />
         
-        <Sparkles count={50} scale={6} size={1.5} speed={0.2} color="#60a5fa" opacity={0.4} />
+        <Sparkles count={50} scale={6} size={1.5} speed={0.2} color={isLight ? "#3b82f6" : "#60a5fa"} opacity={isLight ? 0.6 : 0.4} />
         
-        <AnimatedPlanet />
+        <AnimatedPlanet isLight={isLight} />
         
         <OrbitControls 
           enableZoom={false}
