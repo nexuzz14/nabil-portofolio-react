@@ -73,6 +73,7 @@ export default function Experience() {
           </div>
       ) : (
         <motion.div 
+          key={isExpanded ? "expanded" : "collapsed"}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

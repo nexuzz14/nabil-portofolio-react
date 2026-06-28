@@ -70,6 +70,7 @@ export default function Education() {
          </div>
       ) : (
         <motion.div 
+          key={isExpanded ? "expanded" : "collapsed"}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
