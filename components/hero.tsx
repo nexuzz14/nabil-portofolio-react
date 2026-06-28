@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { ArrowRight, Terminal } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 
