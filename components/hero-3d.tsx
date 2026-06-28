@@ -22,11 +22,11 @@ function AnimatedPlanet() {
         {/* Core Planet */}
         <Sphere args={[1.2, 64, 64]}>
           <meshPhysicalMaterial 
-            color="#0f172a" 
+            color="#1e293b" 
             emissive="#1e1b4b"
-            emissiveIntensity={0.2}
-            roughness={0.1}
-            metalness={0.9}
+            emissiveIntensity={0.6}
+            roughness={0.2}
+            metalness={0.8}
             clearcoat={1}
             clearcoatRoughness={0.1}
           />
@@ -67,9 +67,10 @@ export default function Hero3D() {
   return (
     <div className="relative w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-background/50 backdrop-blur-sm overflow-hidden cursor-grab active:cursor-grabbing flex items-center justify-center">
       <Canvas style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} camera={{ position: [0, 0, 4.5], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
-        <directionalLight position={[-10, 10, -5]} intensity={2} color="#8b5cf6" />
+        <ambientLight intensity={1.5} />
+        <directionalLight position={[10, 0, 5]} intensity={2.5} color="#ffffff" />
+        <directionalLight position={[-10, 10, -5]} intensity={2.5} color="#8b5cf6" />
+        <pointLight position={[5, -5, 5]} intensity={1} color="#3b82f6" />
         
         <Sparkles count={50} scale={6} size={1.5} speed={0.2} color="#60a5fa" opacity={0.4} />
         
