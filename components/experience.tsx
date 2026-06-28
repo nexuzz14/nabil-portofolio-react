@@ -30,6 +30,7 @@ export default function Experience() {
         const { data, error } = await supabase
           .from('experiences')
           .select('*')
+          .order('display_order', { ascending: true })
           .order('created_at', { ascending: true })
         
         if (error) throw error

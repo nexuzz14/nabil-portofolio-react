@@ -115,7 +115,7 @@ export default function Projects({ limit }: { limit?: number }) {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        let query = supabase.from('projects').select('*').order('created_at', { ascending: false })
+        let query = supabase.from('projects').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false })
         if (limit) {
           query = query.limit(limit)
         }

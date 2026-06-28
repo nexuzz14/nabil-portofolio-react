@@ -27,6 +27,7 @@ export default function Education() {
         const { data, error } = await supabase
           .from('education')
           .select('*')
+          .order('display_order', { ascending: true })
           .order('created_at', { ascending: true })
         
         if (error) throw error

@@ -22,7 +22,7 @@ export default function Certificates() {
   useEffect(() => {
     async function fetchCertificates() {
       try {
-        const { data, error } = await supabase.from('certificates').select('*').order('created_at', { ascending: false })
+        const { data, error } = await supabase.from('certificates').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false })
         if (error) throw error
         if (data) setCertificates(data)
       } catch (err) {
