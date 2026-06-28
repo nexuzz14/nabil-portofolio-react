@@ -2,48 +2,49 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Float, Sparkles } from '@react-three/drei'
+import { OrbitControls, Float, Sphere, Ring, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 
-function AnimatedShape() {
-  const meshRef = useRef<THREE.Mesh>(null)
-  const wireframeRef = useRef<THREE.Mesh>(null)
+function AnimatedPlanet() {
+  const ringsRef = useRef<THREE.Group>(null)
 
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.1
-      meshRef.current.rotation.y += delta * 0.15
-    }
-    if (wireframeRef.current) {
-      wireframeRef.current.rotation.x -= delta * 0.15
-      wireframeRef.current.rotation.y -= delta * 0.1
+    if (ringsRef.current) {
+      // Tilt the rings and rotate them slowly
+      ringsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1 + 1.2
+      ringsRef.current.rotation.z -= delta * 0.2
     }
   })
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      {/* Inner solid core */}
-      <mesh ref={meshRef} scale={1.2}>
-        <icosahedronGeometry args={[1, 1]} />
-        <meshStandardMaterial 
-          color="#0f172a" 
-          emissive="#1e1b4b"
-          emissiveIntensity={0.5}
-          roughness={0.2} 
-          metalness={0.8} 
-        />
-      </mesh>
-      
-      {/* Outer wireframe */}
-      <mesh ref={wireframeRef} scale={1.4}>
-        <icosahedronGeometry args={[1, 1]} />
-        <meshBasicMaterial 
-          color="#3b82f6" 
-          wireframe={true} 
-          transparent
-          opacity={0.4}
-        />
-      </mesh>
+    <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+      <group>
+        {/* Core Planet */}
+        <Sphere args={[1.2, 64, 64]}>
+          <meshPhysicalMaterial 
+            color="#0f172a" 
+            emissive="#1e1b4b"
+            emissiveIntensity={0.2}
+            roughness={0.1}
+            metalness={0.9}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+          />
+        </Sphere>
+        
+        {/* Cyber Rings */}
+        <group ref={ringsRef}>
+          <Ring args={[1.5, 1.52, 64]}>
+            <meshBasicMaterial color="#3b82f6" side={THREE.DoubleSide} transparent opacity={0.8} />
+          </Ring>
+          <Ring args={[1.7, 1.71, 64]}>
+            <meshBasicMaterial color="#8b5cf6" side={THREE.DoubleSide} transparent opacity={0.5} />
+          </Ring>
+          <Ring args={[1.9, 1.93, 64]}>
+            <meshBasicMaterial color="#60a5fa" side={THREE.DoubleSide} transparent opacity={0.3} />
+          </Ring>
+        </group>
+      </group>
     </Float>
   )
 }
@@ -70,15 +71,15 @@ export default function Hero3D() {
         <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
         <directionalLight position={[-10, 10, -5]} intensity={2} color="#8b5cf6" />
         
-        <Sparkles count={150} scale={8} size={2} speed={0.4} color="#60a5fa" opacity={0.6} />
+        <Sparkles count={50} scale={6} size={1.5} speed={0.2} color="#60a5fa" opacity={0.4} />
         
-        <AnimatedShape />
+        <AnimatedPlanet />
         
         <OrbitControls 
           enableZoom={false}
           enablePan={false}
           autoRotate
-          autoRotateSpeed={1}
+          autoRotateSpeed={0.5}
         />
       </Canvas>
     </div>
