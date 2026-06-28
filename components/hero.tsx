@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { ArrowRight, Terminal } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import Image from "next/image"
+import Hero3D from "@/components/hero-3d"
 
 export default function Hero() {
   const [profile, setProfile] = useState<any>(null)
@@ -119,14 +120,8 @@ export default function Hero() {
                   />
                 </div>
               ) : (
-                <div className="relative w-full h-full rounded-full md:rounded-[2rem] overflow-hidden border-2 border-border/50 shadow-2xl bg-muted z-10 flex items-center justify-center">
-                  <Image 
-                    src="/hero-3d.png"
-                    alt="3D Illustration"
-                    fill
-                    priority
-                    className="object-cover"
-                  />
+                <div className="absolute inset-0 w-full h-full z-10">
+                  <Hero3D />
                 </div>
               )}
               
