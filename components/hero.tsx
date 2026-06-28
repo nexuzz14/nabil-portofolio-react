@@ -2,10 +2,17 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowRight, Terminal } from "lucide-react"
-import { supabase } from "@/lib/supabase"
 import Image from "next/image"
-import Hero3D from "@/components/hero-3d"
+import dynamic from "next/dynamic"
+
+const Hero3D = dynamic(() => import("@/components/hero-3d"), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-muted/20 animate-pulse flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+})
 
 export default function Hero() {
   const [profile, setProfile] = useState<any>(null)

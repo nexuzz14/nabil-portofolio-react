@@ -30,9 +30,9 @@ export default function ProjectsPage() {
           
           {/* Unified Global Background */}
           <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[120px] mix-blend-screen animate-pulse duration-[8000ms]"></div>
-            <div className="absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-blue-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse duration-[10000ms]"></div>
-            <div className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] bg-purple-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse duration-[12000ms]"></div>
+            <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '8000ms' }}></div>
+            <div className="absolute top-[40%] right-[-10%] w-[35vw] h-[35vw] bg-blue-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '10000ms' }}></div>
+            <div className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] bg-purple-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '12000ms' }}></div>
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
           </div>
 
