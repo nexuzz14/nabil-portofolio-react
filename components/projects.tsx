@@ -107,9 +107,42 @@ function ProjectImageCarousel({ images, title, className = "aspect-video" }: { i
   )
 }
 
+const defaultProjects: Project[] = [
+  {
+    id: '1',
+    title: 'Modern E-Commerce Platform',
+    description: 'A full-stack e-commerce solution built with Next.js, Tailwind CSS, and Supabase featuring real-time inventory and secure payment integration.',
+    image: '/placeholder.svg',
+    technologies: ['Next.js', 'React', 'Tailwind CSS', 'Supabase'],
+    live_url: 'https://www.nabilcf.my.id',
+    github_url: 'https://github.com/nexuzz14',
+    badge: 'Featured'
+  },
+  {
+    id: '2',
+    title: 'Enterprise Management System',
+    description: 'Custom ERP and warehouse management dashboard developed with Laravel and MySQL for high scalability and rapid business workflow automation.',
+    image: '/placeholder.svg',
+    technologies: ['Laravel', 'PHP', 'MySQL', 'Bootstrap'],
+    live_url: 'https://www.nabilcf.my.id',
+    github_url: 'https://github.com/nexuzz14',
+    badge: 'Enterprise'
+  },
+  {
+    id: '3',
+    title: 'Interactive Portfolio & CMS',
+    description: 'Dynamic personal brand website with bespoke interactive UI, customizable admin dashboard, and responsive modern aesthetics.',
+    image: '/placeholder.svg',
+    technologies: ['React', 'Next.js', 'Framer Motion', 'TypeScript'],
+    live_url: 'https://www.nabilcf.my.id',
+    github_url: 'https://github.com/nexuzz14',
+    badge: 'Showcase'
+  }
+]
+
 export default function Projects({ limit }: { limit?: number }) {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
+  const [projects, setProjects] = useState<Project[]>(defaultProjects)
+  const [loading, setLoading] = useState(false)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   useEffect(() => {
@@ -123,7 +156,7 @@ export default function Projects({ limit }: { limit?: number }) {
         const { data, error } = await query
         
         if (error) throw error
-        if (data) setProjects(data)
+        if (data && data.length > 0) setProjects(data)
       } catch (err) {
         console.error("Error fetching projects:", err)
       } finally {

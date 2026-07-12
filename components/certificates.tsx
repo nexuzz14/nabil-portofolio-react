@@ -15,16 +15,35 @@ interface Certificate {
   image: string
 }
 
+const defaultCertificates: Certificate[] = [
+  {
+    id: '1',
+    title: 'Full-Stack Web Development Mastery',
+    issuer: 'Professional Developer Certification',
+    date: '2024',
+    link: 'https://www.nabilcf.my.id',
+    image: '/placeholder.svg'
+  },
+  {
+    id: '2',
+    title: 'Cloud Database & Backend Security Architecture',
+    issuer: 'Tech Institute Indonesia',
+    date: '2023',
+    link: 'https://www.nabilcf.my.id',
+    image: '/placeholder.svg'
+  }
+]
+
 export default function Certificates() {
-  const [certificates, setCertificates] = useState<Certificate[]>([])
-  const [loading, setLoading] = useState(true)
+  const [certificates, setCertificates] = useState<Certificate[]>(defaultCertificates)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     async function fetchCertificates() {
       try {
         const { data, error } = await supabase.from('certificates').select('*').order('display_order', { ascending: true }).order('created_at', { ascending: false })
         if (error) throw error
-        if (data) setCertificates(data)
+        if (data && data.length > 0) setCertificates(data)
       } catch (err) {
         console.error("Error fetching certificates:", err)
       } finally {

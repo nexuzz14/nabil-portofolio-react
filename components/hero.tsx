@@ -16,8 +16,13 @@ const Hero3D = dynamic(() => import("@/components/hero-3d"), {
   )
 })
 
+const defaultProfile = {
+  role: "M Nabil CF — *Full-Stack Developer* & Freelance Engineer",
+  bio: "Full-Stack Developer & Freelance Engineer berpengalaman dalam membangun aplikasi web modern yang cepat, aman, dan skalabel menggunakan Laravel, React, Next.js, dan arsitektur cloud masa kini. Siap membantu mentransformasi ide digital Anda menjadi solusi nyata."
+}
+
 export default function Hero() {
-  const [profile, setProfile] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(defaultProfile)
 
   useEffect(() => {
     async function fetchProfile() {
@@ -26,18 +31,6 @@ export default function Hero() {
     }
     fetchProfile()
   }, [])
-
-  if (!profile) {
-    return (
-      <section className="min-h-[80vh] flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4 w-full max-w-3xl">
-          <div className="h-12 w-3/4 bg-primary/10 rounded-lg"></div>
-          <div className="h-6 w-1/2 bg-primary/10 rounded-lg"></div>
-          <div className="h-4 w-5/6 bg-primary/5 rounded mt-8"></div>
-        </div>
-      </section>
-    )
-  }
 
   const scrollToContact = (e: React.MouseEvent) => {
     e.preventDefault()

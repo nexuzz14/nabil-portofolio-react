@@ -16,9 +16,25 @@ interface Education {
   is_featured?: boolean
 }
 
+const defaultEducation: Education[] = [
+  {
+    id: '1',
+    degree: 'Software Engineering & Web Technologies',
+    institution: 'Pendidikan Rekayasa Perangkat Lunak',
+    period: '2020 - 2024',
+    location: 'Indonesia',
+    status: 'Lulus',
+    gpa: '3.85',
+    achievements: [
+      'Fokus mendalam pada Software Architecture, Web Security, dan Database Design.',
+      'Aktif mengembangkan proyek open-source dan aplikasi skala produksi.'
+    ]
+  }
+]
+
 export default function Education() {
-  const [education, setEducation] = useState<Education[]>([])
-  const [loading, setLoading] = useState(true)
+  const [education, setEducation] = useState<Education[]>(defaultEducation)
+  const [loading, setLoading] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
@@ -31,7 +47,7 @@ export default function Education() {
           .order('created_at', { ascending: true })
         
         if (error) throw error
-        if (data) setEducation(data)
+        if (data && data.length > 0) setEducation(data)
       } catch (err) {
         console.error("Error fetching education:", err)
       } finally {

@@ -19,9 +19,39 @@ interface Experience {
   is_featured?: boolean
 }
 
+const defaultExperience: Experience[] = [
+  {
+    id: '1',
+    title: 'Senior Full-Stack Developer & Freelance Engineer',
+    company: 'Freelance & Independent Solutions',
+    period: '2023 - Present',
+    location: 'Indonesia / Remote',
+    status: 'Active',
+    skills: ['Laravel', 'Next.js', 'React', 'TypeScript', 'Supabase', 'Tailwind CSS'],
+    achievements: [
+      'Engineered high-performance web applications and custom business platforms for diverse clients.',
+      'Architected scalable backend REST APIs and responsive modern frontends optimized for SEO and Core Web Vitals.'
+    ],
+    is_featured: true
+  },
+  {
+    id: '2',
+    title: 'Full-Stack Web Developer',
+    company: 'Digital Projects Showcase',
+    period: '2021 - 2023',
+    location: 'Indonesia',
+    status: 'Completed',
+    skills: ['PHP', 'Laravel', 'MySQL', 'JavaScript', 'REST API'],
+    achievements: [
+      'Developed tailored database applications and automation systems for enterprise workflows.',
+      'Implemented clean architectural patterns and responsive UI components.'
+    ]
+  }
+]
+
 export default function Experience() {
-  const [experience, setExperience] = useState<Experience[]>([])
-  const [loading, setLoading] = useState(true)
+  const [experience, setExperience] = useState<Experience[]>(defaultExperience)
+  const [loading, setLoading] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
@@ -34,7 +64,7 @@ export default function Experience() {
           .order('created_at', { ascending: true })
         
         if (error) throw error
-        if (data) setExperience(data)
+        if (data && data.length > 0) setExperience(data)
       } catch (err) {
         console.error("Error fetching experience:", err)
       } finally {

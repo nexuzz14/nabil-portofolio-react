@@ -111,9 +111,22 @@ interface Skill {
   category: string
 }
 
+const defaultSkills: Skill[] = [
+  { id: '1', name: 'Laravel', category: 'Backend' },
+  { id: '2', name: 'React.js', category: 'Frontend' },
+  { id: '3', name: 'Next.js', category: 'Frontend' },
+  { id: '4', name: 'TypeScript', category: 'Frontend' },
+  { id: '5', name: 'Tailwind CSS', category: 'Frontend' },
+  { id: '6', name: 'Node.js', category: 'Backend' },
+  { id: '7', name: 'PostgreSQL', category: 'Database' },
+  { id: '8', name: 'Supabase', category: 'Database' },
+  { id: '9', name: 'Docker', category: 'DevOps' },
+  { id: '10', name: 'Git', category: 'Tools' },
+]
+
 export default function Skills() {
-  const [skills, setSkills] = useState<Skill[]>([])
-  const [loading, setLoading] = useState(true)
+  const [skills, setSkills] = useState<Skill[]>(defaultSkills)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     async function fetchSkills() {
@@ -123,7 +136,7 @@ export default function Skills() {
           .select('*')
         
         if (error) throw error
-        if (data) setSkills(data)
+        if (data && data.length > 0) setSkills(data)
       } catch (err) {
         console.error("Error fetching skills:", err)
       } finally {

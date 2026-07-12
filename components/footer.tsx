@@ -21,17 +21,26 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ]
 
+const defaultFooterProfile: Profile = {
+  email: "nabil@nabilcf.my.id",
+  github_url: "https://github.com/nexuzz14",
+  linkedin_url: "https://linkedin.com/in/nabilcf",
+  instagram_url: "https://instagram.com/nabilcf_"
+}
+
 export default function Footer() {
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(defaultFooterProfile)
 
   useEffect(() => {
     async function fetchProfile() {
-      const { data } = await supabase
-        .from('profile')
-        .select('email, github_url, linkedin_url, instagram_url')
-        .limit(1)
-        .single()
-      if (data) setProfile(data)
+      try {
+        const { data } = await supabase
+          .from('profile')
+          .select('email, github_url, linkedin_url, instagram_url')
+          .limit(1)
+          .single()
+        if (data && (data.email || data.github_url)) setProfile(data)
+      } catch {}
     }
     fetchProfile()
   }, [])
