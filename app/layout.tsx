@@ -10,7 +10,7 @@ const siteUrl = 'https://www.nabilcf.my.id'
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'M Nabil CF | Full-Stack Developer & Freelance Engineer',
-  description: 'Portfolio of Muhammad Nabil Cahya Firdaus, a Full-Stack Developer and freelance engineer experienced in Laravel, React, Next.js, and more. Available for freelance projects.',
+  description: 'Portofolio Muhammad Nabil Cahya Firdaus, Full Stack Web Developer & Freelancer profesional ahli React, Next.js & Laravel. Siap untuk proyek website.',
   keywords: ['Full-stack developer', 'Laravel', 'React', 'Next.js', 'Freelance Web Developer', 'Jasa Pembuatan Website', 'Programmer', 'Magelang', 'Web Developer Indonesia', 'Portfolio'],
   authors: [{ name: 'M Nabil Cahya Firdaus', url: siteUrl }],
   creator: 'M Nabil Cahya Firdaus',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'M Nabil CF | Full-Stack Developer & Freelance Engineer',
-    description: 'Portfolio of Muhammad Nabil Cahya Firdaus, available for full-stack web development and freelance projects.',
+    description: 'Portofolio Muhammad Nabil Cahya Firdaus, Full Stack Web Developer & Freelancer profesional ahli React, Next.js & Laravel. Siap untuk proyek website.',
     url: siteUrl,
     siteName: 'M Nabil CF Portfolio',
     type: 'website',
