@@ -1,12 +1,26 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export async function POST(request: Request) {
   const { name, email, phone, message } = await request.json();
 
   if (!name || !email || !message) {
     return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
   }
+
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safePhone = escapeHtml(phone || '-');
+  const safeMessage = escapeHtml(message);
 
   const fonnteToken = process.env.FONNTE_TOKEN;
   const ownerPhone = process.env.OWNER_PHONE; // The admin's WhatsApp number
@@ -53,11 +67,11 @@ export async function POST(request: Request) {
       subject: `New Message from Contact Form`,
       html: `
         <h2>Pesan Baru dari Formulir Kontak Website</h2>
-        <p><strong>Nama:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>WhatsApp:</strong> ${phone || '-'}</p>
+        <p><strong>Nama:</strong> ${safeName}</p>
+        <p><strong>Email:</strong> ${safeEmail}</p>
+        <p><strong>WhatsApp:</strong> ${safePhone}</p>
         <p><strong>Pesan:</strong></p>
-        <p>${message}</p>
+        <p>${safeMessage}</p>
       `,
     };
 

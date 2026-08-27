@@ -5,14 +5,14 @@ import { supabase } from "@/lib/supabase"
 import { motion, useInView } from "framer-motion"
 import { Folder, Briefcase, Cpu } from "lucide-react"
 
-interface Profile {
+interface AboutProfile {
   full_bio: string
-  resume_url: string
+  resume_url?: string
 }
 
 function AnimatedCounter({ value }: { value: number }) {
   const [displayValue, setDisplayValue] = useState(0)
-  const ref = useRef(null)
+  const ref = useRef<HTMLSpanElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-50px" })
   const hasAnimated = useRef(false)
 
@@ -38,12 +38,12 @@ function AnimatedCounter({ value }: { value: number }) {
   return <span ref={ref}>{displayValue}</span>
 }
 
-const defaultAboutProfile = {
+const defaultAboutProfile: AboutProfile = {
   full_bio: "Muhammad Nabil Cahya Firdaus (M Nabil CF) adalah seorang Full-Stack Developer dan Freelance Engineer yang berfokus pada pengembangan solusi web modern, responsif, dan berkinerja tinggi. Berpengalaman luas dalam ekosistem pengembangan terkini seperti Laravel, React.js, Next.js, TypeScript, Node.js, serta integrasi cloud database Supabase dan PostgreSQL.\n\nDengan komitmen pada clean code, arsitektur yang skalabel, dan Search Engine Optimization (SEO), saya membangun aplikasi web yang memberikan pengalaman pengguna luar biasa dan siap mendorong pertumbuhan bisnis Anda."
 }
 
 export default function About() {
-  const [profile, setProfile] = useState<any>(defaultAboutProfile)
+  const [profile, setProfile] = useState<AboutProfile>(defaultAboutProfile)
   const [stats, setStats] = useState({ projects: 6, experiences: 4, skills: 12 })
 
   useEffect(() => {
