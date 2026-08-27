@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import { motion } from "framer-motion"
 import { ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
@@ -43,19 +42,6 @@ function ProjectImageCarousel({ images, title, className = "aspect-video" }: { i
     emblaApi.on('reInit', onSelect)
     onSelect()
   }, [emblaApi])
-
-  if (images.length === 0) {
-    return (
-      <div className={`relative overflow-hidden bg-muted ${className}`}>
-        <Image
-          src="/placeholder.svg"
-          alt={title}
-          fill
-          className="object-cover"
-        />
-      </div>
-    )
-  }
 
   if (images.length === 1) {
     return (
@@ -213,9 +199,9 @@ export default function Projects({ limit }: { limit?: number }) {
           <div className="w-20 h-1 bg-primary rounded-full"></div>
         </div>
         {limit && (
-          <Link href="/projects" className="hidden sm:flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+          <a href="/projects" className="hidden sm:flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
             View All <ExternalLink className="w-4 h-4" />
-          </Link>
+          </a>
         )}
       </div>
 
@@ -273,9 +259,9 @@ export default function Projects({ limit }: { limit?: number }) {
 
       {limit && (
         <div className="mt-12 flex justify-center sm:hidden">
-          <Link href="/projects" className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors">
+          <a href="/projects" className="bg-primary/10 text-primary px-8 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-primary/20 transition-colors">
             View All Projects <ExternalLink className="w-4 h-4" />
-          </Link>
+          </a>
         </div>
       )}
 

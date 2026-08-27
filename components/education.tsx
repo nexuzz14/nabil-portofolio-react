@@ -13,7 +13,6 @@ interface Education {
   status: string
   coursework: string[]
   achievements: string[]
-  gpa?: string
   is_featured?: boolean
 }
 

@@ -16,29 +16,18 @@ const Hero3D = dynamic(() => import("@/components/hero-3d"), {
   )
 })
 
-interface HeroProfile {
-  role: string
-  bio: string
-  name?: string
-  avatar_url?: string
-}
-
-const defaultProfile: HeroProfile = {
+const defaultProfile = {
   role: "M Nabil CF — *Full-Stack Developer* & Freelance Engineer",
   bio: "Full-Stack Developer & Freelance Engineer berpengalaman dalam membangun aplikasi web modern yang cepat, aman, dan skalabel menggunakan Laravel, React, Next.js, dan arsitektur cloud masa kini. Siap membantu mentransformasi ide digital Anda menjadi solusi nyata."
 }
 
 export default function Hero() {
-  const [profile, setProfile] = useState<HeroProfile>(defaultProfile)
+  const [profile, setProfile] = useState<any>(defaultProfile)
 
   useEffect(() => {
     async function fetchProfile() {
-      try {
-        const { data } = await supabase.from('profile').select('*').limit(1).single()
-        if (data) setProfile(data)
-      } catch (err) {
-        console.error("Error fetching profile:", err)
-      }
+      const { data } = await supabase.from('profile').select('*').limit(1).single()
+      if (data) setProfile(data)
     }
     fetchProfile()
   }, [])
@@ -137,7 +126,7 @@ export default function Hero() {
                 <div className="relative w-full h-full rounded-full md:rounded-[2rem] overflow-hidden border-2 border-border/50 shadow-2xl bg-muted z-10">
                   <Image 
                     src={profile.avatar_url}
-                    alt={profile.name || "Profile Avatar"}
+                    alt={profile.name}
                     fill
                     priority
                     className="object-cover"
