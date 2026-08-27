@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Float, Sphere, Ring, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
-import { useTheme } from 'next-themes'
 
 function AnimatedPlanet() {
   const ringsRef = useRef<THREE.Group>(null)

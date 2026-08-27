@@ -126,7 +126,7 @@ const defaultSkills: Skill[] = [
 
 export default function Skills() {
   const [skills, setSkills] = useState<Skill[]>(defaultSkills)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchSkills() {
