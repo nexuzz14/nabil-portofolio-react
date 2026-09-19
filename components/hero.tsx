@@ -7,7 +7,34 @@ import { supabase } from "@/lib/supabase"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 
-const Hero3D = dynamic(() => import("@/components/hero-3d"), { 
+// Helper to retry dynamic imports (handles transient network issues or chunk load failures)
+const dynamicWithRetry = (importFn: () => Promise<any>, retries = 2, interval = 1000) => {
+  return async () => {
+    for (let i = 0; i <= retries; i++) {
+      try {
+        return await importFn()
+      } catch (err) {
+        if (i === retries) {
+          console.warn("Failed to load 3D component after retries, using fallback:", err)
+          // Graceful fallback component that matches the design instead of crashing the page
+          return {
+            default: () => (
+              <div className="relative w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-gradient-to-tr from-primary/10 via-card to-blue-500/10 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_70%)]" />
+                <div className="relative z-10 w-24 h-24 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center animate-pulse">
+                  <Terminal className="w-10 h-10 text-primary" />
+                </div>
+              </div>
+            ),
+          }
+        }
+        await new Promise((res) => setTimeout(res, interval))
+      }
+    }
+  }
+}
+
+const Hero3D = dynamic(dynamicWithRetry(() => import("@/components/hero-3d")), { 
   ssr: false,
   loading: () => (
     <div className="w-full h-full rounded-full md:rounded-[2rem] border-2 border-border/50 shadow-2xl bg-muted/20 animate-pulse flex items-center justify-center">
